@@ -33,7 +33,9 @@ public class Main {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
+		
+		TwitterStream.twitterInit();
+		TwitterStream.twitterSearch("#24HOURSOFJACKU");
 	}
 	
 	static class HashTagRequestHandler implements HttpHandler {
