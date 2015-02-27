@@ -101,6 +101,23 @@ public class ServerRunner implements IServerRunner{
 				os.close();
 				htmlFileInputStream.close();
 			}
+			else if (path.equals("/style.css")) {
+				
+				InputStream htmlFileInputStream = ServerRunner.class.getClassLoader().getResourceAsStream("resources/style.css");
+				
+				Headers h = t.getResponseHeaders();
+				h.add("Content-Type", "text/css");
+				
+				t.sendResponseHeaders(200, 0);
+				OutputStream os = t.getResponseBody();
+				final byte[] buffer = new byte[0x10000];
+				int count = 0;
+				while ((count = htmlFileInputStream.read(buffer)) >= 0) {
+					os.write(buffer,0,count);
+				}
+				os.close();
+				htmlFileInputStream.close();
+			}
 		}
 	}
 

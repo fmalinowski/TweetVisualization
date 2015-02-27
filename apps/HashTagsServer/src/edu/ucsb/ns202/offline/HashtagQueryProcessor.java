@@ -20,7 +20,7 @@ public class HashtagQueryProcessor {
 		hashtagGraph.addEgde("#Node4", "NODE5");
 		hashtagGraph.addEgde("#Node4", "NODE6");
 		hashtagGraph.addEgde("#Node4", "NODE7");
-		hashtagGraph.addEgde("#Node4", "NODE1");
+		hashtagGraph.addEgde("#Node4", "#NODE1");
 		
 		return hashtagGraph.getNodesAndEdgesAsJSON();
 	}
