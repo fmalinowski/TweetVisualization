@@ -1,5 +1,9 @@
 package edu.ucsb.ns202.online;
 
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
+
 import twitter4j.Query;
 import twitter4j.QueryResult;
 import twitter4j.RateLimitStatus;
@@ -13,8 +17,14 @@ import twitter4j.conf.ConfigurationBuilder;
 public class TwitterRest {
 	private static ConfigurationBuilder cb;
 	private static Twitter twitter;
+	private static Hashtable hashMap = new Hashtable();
 
-	public static void twitterAuth() {
+	public static void handleSearch(String searchParam) {
+		twitterAuth();
+		twitterSearch(searchParam);
+	}
+
+	private static void twitterAuth() {
 		cb = new ConfigurationBuilder();
 		cb.setOAuthConsumerKey(TwitterCredentials.CONSUMER_KEY)
 				.setOAuthConsumerSecret(TwitterCredentials.CONSUMER_SECRET)
@@ -24,18 +34,20 @@ public class TwitterRest {
 		twitter = new TwitterFactory(cb.build()).getInstance();
 	}
 
-	public static void twitterSearch(String hashTag) {
+	private static void twitterSearch(String hashTag) {
 		Query query = new Query(hashTag);
 		query.count(100);
 		query.lang("en");
+		int index = 0;
 		int totalCount = 0;
-		int total_tweet_per_hashtag = 300;
+		int totalTweetsPerHT = 400;
 		Boolean hasStillResults = true;
 		int remainingRequestsBeforeRateLimit = 180;
 		int secondsUntilLimitRateReset = 0;
 		RateLimitStatus rateLimitStatus;
+		List<String> valuesList = new ArrayList<String>();
 
-		while ((totalCount < total_tweet_per_hashtag) && hasStillResults) {
+		while ((totalCount < totalTweetsPerHT) && hasStillResults) {
 			try {
 				QueryResult result = twitter.search(query);
 				totalCount += result.getCount();
@@ -46,29 +58,33 @@ public class TwitterRest {
 				secondsUntilLimitRateReset = rateLimitStatus
 						.getSecondsUntilReset();
 
-				java.util.List<Status> tweets = result.getTweets();
+				List<Status> tweets = result.getTweets();
 
 				for (Status tweet : tweets) {
-					System.out.println("-----------------");
 					if (tweet.getHashtagEntities().length > 1) {
+						System.out.println("-----------------");
 						for (int i = 0; i < tweet.getHashtagEntities().length; i++) {
 							if (!tweet.getHashtagEntities()[i].getText()
-									.equalsIgnoreCase(hashTag.substring(1))) {
-								String printHashTag = tweet
-										.getHashtagEntities()[i].getText();
-								System.out.println("#:" + printHashTag);
+									.equalsIgnoreCase(hashTag)) {
+								String printHashTag = tweet.getHashtagEntities()[i].getText();
+								System.out
+										.println(index + ": #" + printHashTag);
+								valuesList.add(printHashTag);
+								index++;
 							}
 						}
 						for (int i = 0; i < tweet.getUserMentionEntities().length; i++) {
 							String printMention = tweet
 									.getUserMentionEntities()[i].getText();
-							System.out.println("@:" + printMention);
+							System.out.println(index + ": @" + printMention);
+							index++;
 						}
 					}
 				}
 
 				hasStillResults = result.hasNext();
 				query = result.nextQuery();
+
 				if (remainingRequestsBeforeRateLimit <= 0) {
 					System.out.println("Out of requests");
 				}
@@ -78,6 +94,9 @@ public class TwitterRest {
 			System.out.println("DONE. # Requests left: "
 					+ remainingRequestsBeforeRateLimit);
 		}
+		// Add iteration to hashmap
+		hashMap.put(hashTag, valuesList);
+		System.out.println(hashMap.toString());
+		System.out.println(hashMap.size());		
 	}
-
 }
