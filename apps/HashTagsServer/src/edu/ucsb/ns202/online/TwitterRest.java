@@ -21,7 +21,16 @@ public class TwitterRest {
 
 	public static void handleSearch(String searchParam) {
 		twitterAuth();
-		twitterSearch(searchParam);
+		List<String> searchList = twitterSearch(searchParam);
+		for (int i = 0; i < 5; i++) {
+			twitterSearch(searchList.get(i));
+		}
+		System.out.println("------------hashMap------------");
+		System.out.println(searchParam + ": " + hashMap.get(searchParam));
+		for (int i = 0; i < 5; i++) {
+			System.out.println(searchList.get(i) + ": "
+					+ hashMap.get(searchList.get(i)));
+		}
 	}
 
 	private static void twitterAuth() {
@@ -34,7 +43,7 @@ public class TwitterRest {
 		twitter = new TwitterFactory(cb.build()).getInstance();
 	}
 
-	private static void twitterSearch(String hashTag) {
+	private static List<String> twitterSearch(String hashTag) {
 		Query query = new Query(hashTag);
 		query.count(100);
 		query.lang("en");
@@ -62,21 +71,22 @@ public class TwitterRest {
 
 				for (Status tweet : tweets) {
 					if (tweet.getHashtagEntities().length > 1) {
-						System.out.println("-----------------");
+						// System.out.println("-----------------");
 						for (int i = 0; i < tweet.getHashtagEntities().length; i++) {
 							if (!tweet.getHashtagEntities()[i].getText()
 									.equalsIgnoreCase(hashTag)) {
-								String printHashTag = tweet.getHashtagEntities()[i].getText();
-								System.out
-										.println(index + ": #" + printHashTag);
+								String printHashTag = tweet
+										.getHashtagEntities()[i].getText();
+								// System.out
+								// .println(index + ": #" + printHashTag);
 								valuesList.add(printHashTag);
 								index++;
 							}
 						}
 						for (int i = 0; i < tweet.getUserMentionEntities().length; i++) {
-							String printMention = tweet
-									.getUserMentionEntities()[i].getText();
-							System.out.println(index + ": @" + printMention);
+							// String printMention = tweet
+							// .getUserMentionEntities()[i].getText();
+							// System.out.println(index + ": @" + printMention);
 							index++;
 						}
 					}
@@ -96,7 +106,9 @@ public class TwitterRest {
 		}
 		// Add iteration to hashmap
 		hashMap.put(hashTag, valuesList);
-		System.out.println(hashMap.toString());
-		System.out.println(hashMap.size());		
+		hashMap.put("asd", "asd");
+		// System.out.println(hashMap.toString());
+		// System.out.println(hashMap.size());
+		return valuesList;
 	}
 }
