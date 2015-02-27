@@ -20,9 +20,12 @@ public class TwitterRest {
 	private static ConfigurationBuilder cb;
 	private static Twitter twitter;
 	private static HashMap<String, ArrayList<String>> hashMap = new HashMap<String, ArrayList<String>>();
-	private static HashtagGraph hashtagGraph = new HashtagGraph();
+	
 
-	public static void handleSearch(String searchParam) {
+	public static HashtagGraph handleSearch(String searchParam) {
+		hashMap.clear();
+		HashtagGraph hashtagGraph = new HashtagGraph();
+		
 		twitterAuth();
 		List<String> searchList = twitterSearch(searchParam);
 		hashtagGraph.addNode(searchParam);
@@ -49,6 +52,7 @@ public class TwitterRest {
 			hashtagGraph.addEgde(searchParam, value.get(j));
 		}
 
+		return hashtagGraph;
 	}
 
 	private static void twitterAuth() {

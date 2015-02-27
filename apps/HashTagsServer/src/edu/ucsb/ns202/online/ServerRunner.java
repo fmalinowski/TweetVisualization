@@ -36,20 +36,20 @@ public class ServerRunner implements IServerRunner {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		TwitterRest.handleSearch("24HOURSOFJACKU");
+//		TwitterRest.handleSearch("24HOURSOFJACKU");
 	}
 
 	class HashTagRequestHandler implements HttpHandler {
 		public void handle(HttpExchange t) throws IOException {
 			String query = t.getRequestURI().getQuery();
-			// Will get a map with as a key the parameter and as a value the
-			// value
 			// This serves the requests like ?param1=value1&param2=value2 ...
 			Map<String, String> params = ParamUtilities.queryToMap(query);
 			hashtagQueryProcessor = new HashtagQueryProcessor(
 					params.get("hashtag"));
 			JSONObject jsonResponse = null;
-
+			
+			// Send the query
+			HashtagQueryProcessor.placeHolder = TwitterRest.handleSearch(query);
 			try {
 				jsonResponse = hashtagQueryProcessor.query();
 			} catch (JSONException e) {
