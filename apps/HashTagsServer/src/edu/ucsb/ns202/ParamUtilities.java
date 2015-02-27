@@ -1,4 +1,4 @@
-package edu.ucsb.ns202.online;
+package edu.ucsb.ns202;
 import java.util.HashMap;
 import java.util.Map;
 
