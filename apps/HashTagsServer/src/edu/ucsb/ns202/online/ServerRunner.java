@@ -32,8 +32,9 @@ public class ServerRunner implements IServerRunner{
 			e.printStackTrace();
 		}
 		
-		TwitterStream.twitterInit();
-		TwitterStream.twitterSearch("#24HOURSOFJACKU", true);
+		TwitterRest.twitterAuth();
+		String hashTag = "24HOURSOFJACKU";
+		TwitterRest.twitterSearch(hashTag);
 	}
 	
 	class HashTagRequestHandler implements HttpHandler {
