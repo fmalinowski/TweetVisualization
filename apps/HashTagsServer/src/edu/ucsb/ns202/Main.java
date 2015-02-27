@@ -4,7 +4,7 @@ public class Main {
 	
 	public static void main(String[] args) {
 		IServerRunner serverRunner;
-		String mode = "offline";
+		String mode = "online";
 		
 		for(int i = 0; i < args.length; i++) {
 			if (args[i].indexOf("=") >= 0) {
@@ -19,8 +19,8 @@ public class Main {
 			}
 		}
 		
-		serverRunner = mode.equals("online") ?  new edu.ucsb.ns202.online.ServerRunner() :
-			new edu.ucsb.ns202.offline.ServerRunner();
+		serverRunner = mode.equals("offline") ?  new edu.ucsb.ns202.offline.ServerRunner() : 
+			new edu.ucsb.ns202.online.ServerRunner();
 		
 		serverRunner.run();
 	}
