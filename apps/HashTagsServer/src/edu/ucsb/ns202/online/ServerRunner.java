@@ -33,7 +33,7 @@ public class ServerRunner implements IServerRunner{
 		}
 		
 		TwitterStream.twitterInit();
-		TwitterStream.twitterSearch("#24HOURSOFJACKU");
+		TwitterStream.twitterSearch("#24HOURSOFJACKU", true);
 	}
 	
 	class HashTagRequestHandler implements HttpHandler {

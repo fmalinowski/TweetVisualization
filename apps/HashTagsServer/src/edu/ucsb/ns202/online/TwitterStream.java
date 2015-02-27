@@ -11,13 +11,16 @@ import twitter4j.TwitterStreamFactory;
 import twitter4j.conf.ConfigurationBuilder;
 
 public class TwitterStream {
+	public static boolean hasMoreResults = true;
 	private static ConfigurationBuilder cb;
 	private static twitter4j.TwitterStream ts;
 	private static StatusListener ls;
 	private static FilterQuery tweetFilterQuery;
 	private static List <Status> tweets = new ArrayList();
+	private static List <Status> allTweets = new ArrayList();
 	private static Object lock = new Object();
-	private static int maxTweets = 10;
+	private static int maxTweets = 5;
+	
 	
 	public static int twitterInit() {
 		twitterAuth();
@@ -25,14 +28,14 @@ public class TwitterStream {
 		return 0;
 	}
 	
-	public static List<Status> twitterSearch(String hashTag) {
+	public static List<Status> twitterSearch(String hashTag, boolean hasMoreResults) {
+		String nextSearch = "";
 		tweetFilterQuery = new FilterQuery(); 
         String[] keywords = new String[]{hashTag};
         tweetFilterQuery.track(keywords); 
         tweetFilterQuery.language(new String[]{"en"});
         ts.addListener(ls);     
-        ts.filter(tweetFilterQuery);
-        
+        ts.filter(tweetFilterQuery);        
         try {
         	synchronized (lock) {
                 lock.wait();
@@ -40,13 +43,30 @@ public class TwitterStream {
         } catch (InterruptedException e) {
         	e.printStackTrace();
         }
-        System.out.println("Reached maxTweets: " + maxTweets + "...returning statuses.");
+        
+		for (Status tweet : tweets) {
+			allTweets.add(tweet);
+			System.out.println("------");
+			for (int i = 0; i < tweet.getHashtagEntities().length; i++) {
+				if (!tweet.getHashtagEntities()[i].getText().equalsIgnoreCase(hashTag.substring(1))) {
+					nextSearch = tweet.getHashtagEntities()[i].getText();
+					System.out.println("#: " + nextSearch);
+				}
+			}
+		}
+		tweets.clear();
+        
+        if(hasMoreResults) {
+        	twitterSearch(nextSearch, true);
+        }
+        System.out.println("Done. Returning...");
         ts.shutdown();
-        return tweets;
+        return allTweets;
 	}
 	
 	private static void twitterAuth() {	
 	    cb = new ConfigurationBuilder();
+	    cb.setHttpStreamingReadTimeout(10000); // 10 sec timeout
 	    cb.setOAuthConsumerKey(TwitterCredentials.CONSUMER_KEY)
 	    	.setOAuthConsumerSecret(TwitterCredentials.CONSUMER_SECRET)
 	    	.setOAuthAccessToken(TwitterCredentials.ACCESS_TOKEN)
@@ -57,8 +77,10 @@ public class TwitterStream {
 	private static void streamListener() {
 		ls = new StatusListener() {
 	        public void onStatus(Status status) {
-	            tweets.add(status);
-	            System.out.println(tweets.size() + ":" + status.getText());
+	        	if(status.getHashtagEntities().length > 1) {
+	        		tweets.add(status);
+		            System.out.println(tweets.size() + ":" + status.getText());
+	        	}  
 	            if (tweets.size() > maxTweets) {
 	                synchronized (lock) {
 	                  lock.notify();
