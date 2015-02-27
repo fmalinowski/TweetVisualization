@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import edu.ucsb.ns202.HashtagGraph;
 import twitter4j.Query;
 import twitter4j.QueryResult;
 import twitter4j.RateLimitStatus;
@@ -18,19 +19,34 @@ public class TwitterRest {
 	private static ConfigurationBuilder cb;
 	private static Twitter twitter;
 	private static Hashtable hashMap = new Hashtable();
+	private static HashtagGraph hashtagGraph = new HashtagGraph();
 
 	public static void handleSearch(String searchParam) {
 		twitterAuth();
 		List<String> searchList = twitterSearch(searchParam);
+		hashtagGraph.addNode(searchParam);
+		
 		for (int i = 0; i < 5; i++) {
 			twitterSearch(searchList.get(i));
+			hashtagGraph.addNode(searchList.get(i));
 		}
+
 		System.out.println("------------hashMap------------");
 		System.out.println(searchParam + ": " + hashMap.get(searchParam));
 		for (int i = 0; i < 5; i++) {
 			System.out.println(searchList.get(i) + ": "
 					+ hashMap.get(searchList.get(i)));
+			// Need to get values from key as an array
+
+			Object values = hashMap.get(searchList.get(i));
+
+			
+			System.out.println(values.toString());
+
+			// For loop goes here to add edges
+			
 		}
+		
 	}
 
 	private static void twitterAuth() {

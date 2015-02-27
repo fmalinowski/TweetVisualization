@@ -15,12 +15,14 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
+import edu.ucsb.ns202.HashtagGraph;
 import edu.ucsb.ns202.IServerRunner;
 import edu.ucsb.ns202.ParamUtilities;
 
 public class ServerRunner implements IServerRunner {
 
 	private static HashtagQueryProcessor hashtagQueryProcessor;
+
 
 	public void run() {
 		HttpServer server;

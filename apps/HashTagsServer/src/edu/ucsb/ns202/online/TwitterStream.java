@@ -3,6 +3,7 @@ package edu.ucsb.ns202.online;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.ucsb.ns202.HashtagGraph;
 import twitter4j.*;
 import twitter4j.conf.ConfigurationBuilder;
 
@@ -16,8 +17,7 @@ public class TwitterStream {
 	private static List <Status> allTweets = new ArrayList();
 	private static Object lock = new Object();
 	private static int maxTweets = 5;
-	
-	
+
 	public static int twitterInit() {
 		twitterAuth();
 		streamListener();
