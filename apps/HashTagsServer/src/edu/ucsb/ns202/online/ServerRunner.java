@@ -1,9 +1,6 @@
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
+package edu.ucsb.ns202.online;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.URI;
@@ -17,12 +14,13 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
-public class Main {
+import edu.ucsb.ns202.IServerRunner;
+
+public class ServerRunner implements IServerRunner{
 	
 	private static HashtagQueryProcessor hashtagQueryProcessor;
 
-	public static void main(String[] args) {
-		
+	public void run() {
 		HttpServer server;
 		try {
 			server = HttpServer.create(new InetSocketAddress(8000), 0);
@@ -36,7 +34,7 @@ public class Main {
 
 	}
 	
-	static class HashTagRequestHandler implements HttpHandler {
+	class HashTagRequestHandler implements HttpHandler {
 	    public void handle(HttpExchange t) throws IOException {
 	    	String query = t.getRequestURI().getQuery();
 	    	// Will get a map with as a key the parameter and as a value the value
@@ -65,14 +63,14 @@ public class Main {
 	    }
 	 }
 	
-	static class StaticContentHandler implements HttpHandler {
+	class StaticContentHandler implements HttpHandler {
 		public void handle(HttpExchange t) throws IOException {
 			URI uri = t.getRequestURI();
 			String path = uri.getPath();
 			
 			if (path.equals("/")) {
 				
-				InputStream htmlFileInputStream = Main.class.getClassLoader().getResourceAsStream("resources/index.html");
+				InputStream htmlFileInputStream = ServerRunner.class.getClassLoader().getResourceAsStream("resources/index.html");
 					
 				t.sendResponseHeaders(200, 0);
 				OutputStream os = t.getResponseBody();
@@ -86,7 +84,7 @@ public class Main {
 			}
 			else if (path.equals("/visualization.js")) {
 				
-				InputStream htmlFileInputStream = Main.class.getClassLoader().getResourceAsStream("resources/visualization.js");
+				InputStream htmlFileInputStream = ServerRunner.class.getClassLoader().getResourceAsStream("resources/visualization.js");
 				
 				Headers h = t.getResponseHeaders();
 				h.add("Content-Type", "application/javascript");
