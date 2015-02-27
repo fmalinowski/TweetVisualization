@@ -178,7 +178,7 @@ public class HashtagGraphTest {
 		hashtagGraph.addNode("node4");
 		
 		assertEquals(4, hashtagGraph.getNodesAsJSON().length());
-		assertEquals("[\"{\\\"index\\\":0,\\\"name\\\":\\\"noDe1\\\"}\",\"{\\\"index\\\":3,\\\"name\\\":\\\"node4\\\"}\",\"{\\\"index\\\":1,\\\"name\\\":\\\"noDE2\\\"}\",\"{\\\"index\\\":2,\\\"name\\\":\\\"NODe3\\\"}\"]", hashtagGraph.getNodesAsJSON().toString());
+		assertEquals("[{\"index\":0,\"name\":\"noDe1\"},{\"index\":3,\"name\":\"node4\"},{\"index\":1,\"name\":\"noDE2\"},{\"index\":2,\"name\":\"NODe3\"}]", hashtagGraph.getNodesAsJSON().toString());
 	}
 	
 	@Test
@@ -197,7 +197,7 @@ public class HashtagGraphTest {
 		hashtagGraph.addEgde("node3", "node4");
 		
 		assertEquals(5, hashtagGraph.getEdgesAsJSON().length());
-		assertEquals("[\"{\\\"source\\\":0,\\\"target\\\":1}\",\"{\\\"source\\\":0,\\\"target\\\":2}\",\"{\\\"source\\\":0,\\\"target\\\":3}\",\"{\\\"source\\\":1,\\\"target\\\":2}\",\"{\\\"source\\\":2,\\\"target\\\":3}\"]", hashtagGraph.getEdgesAsJSON().toString());
+		assertEquals("[{\"source\":0,\"target\":1},{\"source\":0,\"target\":2},{\"source\":0,\"target\":3},{\"source\":1,\"target\":2},{\"source\":2,\"target\":3}]", hashtagGraph.getEdgesAsJSON().toString());
 	}
 	
 	@Test
@@ -215,8 +215,8 @@ public class HashtagGraphTest {
 		hashtagGraph.addEgde("node3", "node2");
 		hashtagGraph.addEgde("node3", "node4");
 		
-		String expected = "{\"nodes\":\"[\\\"{\\\\\\\"index\\\\\\\":0,\\\\\\\"name\\\\\\\":\\\\\\\"noDe1\\\\\\\"}\\\",\\\"{\\\\\\\"index\\\\\\\":3,\\\\\\\"name\\\\\\\":\\\\\\\"node4\\\\\\\"}\\\",\\\"{\\\\\\\"index\\\\\\\":1,\\\\\\\"name\\\\\\\":\\\\\\\"noDE2\\\\\\\"}\\\",\\\"{\\\\\\\"index\\\\\\\":2,\\\\\\\"name\\\\\\\":\\\\\\\"NODe3\\\\\\\"}\\\"]\",";
-		expected += "\"links\":\"[\\\"{\\\\\\\"source\\\\\\\":0,\\\\\\\"target\\\\\\\":1}\\\",\\\"{\\\\\\\"source\\\\\\\":0,\\\\\\\"target\\\\\\\":2}\\\",\\\"{\\\\\\\"source\\\\\\\":0,\\\\\\\"target\\\\\\\":3}\\\",\\\"{\\\\\\\"source\\\\\\\":1,\\\\\\\"target\\\\\\\":2}\\\",\\\"{\\\\\\\"source\\\\\\\":2,\\\\\\\"target\\\\\\\":3}\\\"]\"}";
+		String expected = "{\"nodes\":[{\"index\":0,\"name\":\"noDe1\"},{\"index\":3,\"name\":\"node4\"},{\"index\":1,\"name\":\"noDE2\"},{\"index\":2,\"name\":\"NODe3\"}],";
+		expected += "\"links\":[{\"source\":0,\"target\":1},{\"source\":0,\"target\":2},{\"source\":0,\"target\":3},{\"source\":1,\"target\":2},{\"source\":2,\"target\":3}]}";
 		assertEquals(expected, hashtagGraph.getNodesAndEdgesAsJSON().toString());
 	}
 }
