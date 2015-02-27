@@ -1,6 +1,6 @@
 function displayGraph(JSONdata) {
 	var resultContainerSel;
-	var width, height, forceGraph, svg, link, node;
+	var width, height, forceGraph, svg, link, nodesGroup, node, text;
 
 	width = 800;
 	height = 500;
@@ -9,7 +9,7 @@ function displayGraph(JSONdata) {
 
 	forceGraph = d3.layout.force()
 					.linkDistance(50)
-					.charge(-80)
+					.charge(-300)
 					.size([width, height]);
 
 	svg = d3.select(resultContainerSel).append("svg")
@@ -27,17 +27,23 @@ function displayGraph(JSONdata) {
 							// We could have used .style("stroke-width", function(d) { return Math,.sqrt(d.value);}); 
 							// to have a stroker link according to the value data attribute
 
-	node = svg.selectAll(".node")
+	nodesGroup = svg.selectAll("g")
 				.data(JSONdata.nodes)
-					.enter().append("circle")
-							.attr("class", "node")
-							.attr("r", 5) // We could make a function to get the radius bigger: attr(r, function(d) { return d.value; })
-							.call(forceGraph.drag);
-							// We could have used .style("fill", function(d) { return color(d.group); }) 
-							// to color in different colros using the data attribute group.
+				.enter()
+				.append("g");
 
-	node.append("title")
-		.text(function(d) { return d.name; });
+	node = nodesGroup.append("circle")
+					 .attr("class", "node")
+					 .attr("r", 5) // We could make a function to get the radius bigger: attr(r, function(d) { return d.value; })
+					 .call(forceGraph.drag);
+					 // We could have used .style("fill", function(d) { return color(d.group); }) 
+					 // to color in different colros using the data attribute group.
+
+	text = nodesGroup.append("text")
+					 .text(function(d) { return d.name; })
+					 .attr("class", "title")
+					 .attr("x", 8)
+    				 .attr("y", ".31em");
 
 	forceGraph.on("tick", function() {
 		link.attr("x1", function(d) { return d.source.x; })
@@ -45,8 +51,7 @@ function displayGraph(JSONdata) {
 			.attr("x2", function(d) { return d.target.x; })
 			.attr("y2", function(d) { return d.target.y; });
 
-		node.attr("cx", function(d) { return d.x; })
-			.attr("cy", function(d) { return d.y; });
+		nodesGroup.attr("transform", function(d) { return "translate(" + [d.x, d.y] + ")"; });
 	});
 
 }
