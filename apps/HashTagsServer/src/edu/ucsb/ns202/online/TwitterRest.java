@@ -1,6 +1,7 @@
 package edu.ucsb.ns202.online;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -18,14 +19,14 @@ import twitter4j.conf.ConfigurationBuilder;
 public class TwitterRest {
 	private static ConfigurationBuilder cb;
 	private static Twitter twitter;
-	private static Hashtable hashMap = new Hashtable();
+	private static HashMap<String, ArrayList<String>> hashMap = new HashMap<String, ArrayList<String>>();
 	private static HashtagGraph hashtagGraph = new HashtagGraph();
 
 	public static void handleSearch(String searchParam) {
 		twitterAuth();
 		List<String> searchList = twitterSearch(searchParam);
 		hashtagGraph.addNode(searchParam);
-		
+
 		for (int i = 0; i < 5; i++) {
 			twitterSearch(searchList.get(i));
 			hashtagGraph.addNode(searchList.get(i));
@@ -37,16 +38,16 @@ public class TwitterRest {
 			System.out.println(searchList.get(i) + ": "
 					+ hashMap.get(searchList.get(i)));
 			// Need to get values from key as an array
-
-			Object values = hashMap.get(searchList.get(i));
-
-			
-			System.out.println(values.toString());
-
+			List<String> values = hashMap.get(searchList.get(i));
 			// For loop goes here to add edges
-			
+			for (int j = 0; j < values.size(); j++) {
+				hashtagGraph.addEgde(searchList.get(i), values.get(j));
+			}
 		}
-		
+		List<String> value = hashMap.get(searchParam);
+		for (int j = 0; j < value.size(); j++) {
+			hashtagGraph.addEgde(searchParam, value.get(j));
+		}
 	}
 
 	private static void twitterAuth() {
@@ -70,7 +71,7 @@ public class TwitterRest {
 		int remainingRequestsBeforeRateLimit = 180;
 		int secondsUntilLimitRateReset = 0;
 		RateLimitStatus rateLimitStatus;
-		List<String> valuesList = new ArrayList<String>();
+		ArrayList<String> valuesList = new ArrayList<String>();
 
 		while ((totalCount < totalTweetsPerHT) && hasStillResults) {
 			try {
@@ -122,7 +123,6 @@ public class TwitterRest {
 		}
 		// Add iteration to hashmap
 		hashMap.put(hashTag, valuesList);
-		hashMap.put("asd", "asd");
 		// System.out.println(hashMap.toString());
 		// System.out.println(hashMap.size());
 		return valuesList;
