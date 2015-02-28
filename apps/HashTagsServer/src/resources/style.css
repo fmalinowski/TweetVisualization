@@ -1,3 +1,29 @@
+@import url(http://fonts.googleapis.com/css?family=Oswald);
+@import url(http://fonts.googleapis.com/css?family=Roboto+Condensed);
+body {
+	font-family: 'Roboto Condensed', sans-serif;
+	font-size: 14px;
+	margin: 0 auto;
+	width: 800px;
+}
+h1 {
+	font-family: 'Oswald', sans-serif;
+	color: blue;
+	font-size: 42px;
+	font-style: bold;
+	text-align: center;
+}
+.hashtag-form-container {
+	text-align: center;
+}
+.block_title {
+	font-size: 1.25rem;
+	margin-bottom: 5px;
+}
+.results__container {
+	font-size: 0.8rem;
+}
+
 .node {
 	stroke: black;
 	stroke-width: 1.5px;
