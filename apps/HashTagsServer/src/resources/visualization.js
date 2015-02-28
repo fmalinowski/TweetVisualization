@@ -3,7 +3,7 @@ function displayGraph(JSONdata) {
 	var width, height, forceGraph, svg, link, nodesGroup, node, text;
 
 	width = 800;
-	height = 500;
+	height = 700;
 
 	resultContainerSel = ".results__container";
 

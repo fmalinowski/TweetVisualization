@@ -13,6 +13,10 @@ h1 {
 	font-style: bold;
 	text-align: center;
 }
+.about {
+	text-align: center;
+}
+
 .hashtag-form-container {
 	text-align: center;
 }
@@ -22,6 +26,8 @@ h1 {
 }
 .results__container {
 	font-size: 0.8rem;
+	height: 90%;
+	width: 90%;
 }
 
 .node {
