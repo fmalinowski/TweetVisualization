@@ -21,6 +21,7 @@ public class HashtagGraph {
 	private HashMap<String, ArrayList<String>> graph = new HashMap<String, ArrayList<String>>();
 	private HashMap<String, String> hashtagWithCaseMapper = new HashMap<String, String>();
 	private HashMap<String, HashtagNode> hashtagMetaDataHashMap = new HashMap<String, HashtagNode>();
+	private ArrayList<String> hashtagIDarrayList = new ArrayList<String>();
 	private int totalNodesNumber = 0;
 
 	public void addNode(String hashtag) {
@@ -29,6 +30,8 @@ public class HashtagGraph {
 			this.graph.put(hashTagKey, new ArrayList<String>());
 			hashtagWithCaseMapper.put(hashTagKey, hashtag);
 			hashtagMetaDataHashMap.put(hashTagKey, new HashtagNode(totalNodesNumber));
+			hashtagIDarrayList.add(hashTagKey);
+			
 			totalNodesNumber++;
 		}
 	}
@@ -106,13 +109,16 @@ public class HashtagGraph {
 		JSONArray nodesJSON = new JSONArray();
 		JSONObject nodeJSON;
 		HashtagNode nodeMetaData;
+		String hashtagWithCase;
 		
-		for (String hashtag : this.hashtagWithCaseMapper.values()) {
-			nodeMetaData = this.hashtagMetaDataHashMap.get(hashtag.toLowerCase());
+		for (String hashtagKey : this.hashtagIDarrayList) {
+			nodeMetaData = this.hashtagMetaDataHashMap.get(hashtagKey);
+			hashtagWithCase = hashtagWithCaseMapper.get(hashtagKey);
+			
 			nodeJSON = new JSONObject();
 			try {
-				nodeJSON.put("name", hashtag);
-				nodeJSON.put("index", nodeMetaData.nodeID);
+				nodeJSON.put("name", hashtagWithCase);
+				nodeJSON.put("id", nodeMetaData.nodeID);
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}

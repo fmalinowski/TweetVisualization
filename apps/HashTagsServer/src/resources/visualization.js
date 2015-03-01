@@ -3,14 +3,16 @@ function displayGraph(JSONdata) {
 	var width, height, forceGraph, svg, link, nodesGroup, node, text;
 
 	width = 800;
-	height = 700;
+	height = 500;
 
 	resultContainerSel = ".results__container";
 
 	forceGraph = d3.layout.force()
-					.linkDistance(50)
+					.linkDistance(80)
 					.charge(-300)
 					.size([width, height]);
+
+	$(".results__container svg").remove();
 
 	svg = d3.select(resultContainerSel).append("svg")
 			.attr("width", width)
@@ -21,14 +23,14 @@ function displayGraph(JSONdata) {
 				.start();
 
 	link = svg.selectAll(".link")
-				.data(JSONdata.links)
+				.data(JSONdata.links, function(d) { return d.source.id + "-" + d.target.id; })
 					.enter().append("line")
 							.attr("class", "link");
 							// We could have used .style("stroke-width", function(d) { return Math,.sqrt(d.value);}); 
 							// to have a stroker link according to the value data attribute
 
 	nodesGroup = svg.selectAll("g")
-				.data(JSONdata.nodes)
+				.data(JSONdata.nodes, function(d) { return d.id; })
 				.enter()
 				.append("g");
 
