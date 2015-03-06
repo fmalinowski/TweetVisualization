@@ -44,13 +44,9 @@ public class ServerRunner implements IServerRunner{
 	    	Map<String, String> params = ParamUtilities.queryToMap(query);
 	    	
 	    	hashtagQueryProcessor = new HashtagQueryProcessor(params.get("hashtag"));
-	    	JSONObject jsonResponse = null;
-	    	
-			try {
-				jsonResponse = hashtagQueryProcessor.query();
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
+	    	JSONObject jsonResponse;
+			
+	    	jsonResponse = hashtagQueryProcessor.query();
 			
 	    	String strJsonResponse = jsonResponse.toString();
 	    	
