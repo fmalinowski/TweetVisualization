@@ -35,7 +35,7 @@ public class HashtagQueryProcessor {
 		while (this.mySqlAccessor.hasNext()) {
 			hashtagsArray = this.mySqlAccessor.getHashtags();
 			
-			if (hashtagGraph.getCountOfNodes() > 50) {
+			if (hashtagGraph.getCountOfNodes() > 80) {
 				break;
 			}
 			
