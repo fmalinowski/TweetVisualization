@@ -2,6 +2,10 @@
 	border: 1px solid black;
 }
 
+.results__info {
+	position: absolute;
+}
+
 .node {
 	stroke: black;
 	stroke-width: 1.5px;
@@ -13,8 +17,8 @@
 }
 
 .node--highlight-edge-target {
-	stroke: #07D7FF;
-	fill: #07D7FF;
+	stroke: #13B2FF;
+	fill: #13B2FF;
 }
 
 .link {
@@ -40,5 +44,5 @@
 }
 
 .node-title--highlight-edge-target {
-	fill: #07D7FF;
+	fill: #13B2FF;
 }
