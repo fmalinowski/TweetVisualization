@@ -39,8 +39,8 @@ function displayGraph(JSONdata) {
 				.selectAll(".link")
 				.data(JSONdata.links, function(d) { return d.source.id + "-" + d.target.id; })
 				.enter().append("line")
-				.attr("class", "link");
-				// We could have used .style("stroke-width", function(d) { return Math,.sqrt(d.value);}); 
+				.classed("link", true);
+				// We could have used .style("stroke-width", function(d) { return Math.sqrt(d.value);}); //value of 5 max!
 				// to have a stroker link according to the value data attribute
 
 	nodesGroup = graphFrame.selectAll("g")
@@ -49,15 +49,17 @@ function displayGraph(JSONdata) {
 					.append("g");
 
 	node = nodesGroup.append("circle")
-				.attr("class", "node")
+				.classed("node", true)
 				.attr("r", 5) // We could make a function to get the radius bigger: attr(r, function(d) { return d.value; })
+				.on("mouseover", mouseoverNode)
+				.on("mouseout", mouseoutNode)
 				.call(forceGraph.drag);
 				// We could have used .style("fill", function(d) { return color(d.group); }) 
 				// to color in different colros using the data attribute group.
 
 	text = nodesGroup.append("text")
 					.text(function(d) { return d.name; })
-					.attr("class", "title")
+					.classed("node-title", true)
 					.attr("x", 8)
     				.attr("y", ".31em");
 
@@ -79,6 +81,99 @@ function rescale() {
 	scale = d3.event.scale;
 
 	graphFrame.attr("transform", "translate(" + translation + ") scale(" + scale + ")");
+}
+
+function mouseoverNode(nodeData) {
+	var node, nodeText, groupNode, targetNodes;
+
+	node = d3.select(this);
+	nodeText = d3.select(this.parentNode).select("text");
+	
+	$(".results__info").html("Over: " + nodeData.name);
+	node.classed("node--hovered", true);
+	nodeText.classed("node-title--node-hovered", true);
+
+	groupNode = this.parentNode;
+	groupNode.parentNode.appendChild(groupNode); // This is too put the node on top of the otehr ones so that we can see the label
+	
+	targetNodes = {};
+
+	d3.selectAll(".link")
+	 	.filter(function(d) {
+	  		return ((nodeData.index == d.source.index) || (nodeData.index == d.target.index));
+	 	})
+	 	.each(function(d) {
+	 		var targetNodeKey;
+
+	 		d3.select(this).classed("link--node-hovered", true);
+
+	 		// This is to highlight the targeted nodes
+	 		targetNodeKey = d.source.index === nodeData.index ? d.target.index : d.source.index;
+	 		targetNodes[targetNodeKey] = true;
+	 	});
+
+	d3.selectAll(".node")
+		.filter(function(d) {
+			if (targetNodes[d.index]) {
+				return true;
+			}
+			else {
+				return false;
+			}
+	 	})
+	 	.each(function(d) {
+	 		var targetNode, nodeText;
+
+	 		targetNode = d3.select(this);
+	 		nodeText = d3.select(this.parentNode).select("text");
+			
+	 		d3.select(this).classed("node--highlight-edge-target", true);
+	 		nodeText.classed("node-title--highlight-edge-target", true);
+	 	});
+
+}
+
+function mouseoutNode(nodeData) {
+	var node, nodeText, links, targetNodes;
+
+	node = d3.select(this);
+	nodeText = d3.select(this.parentNode).select("text");
+
+	node.classed("node--hovered", false);
+	nodeText.classed("node-title--node-hovered", false);
+
+	targetNodes = {};
+
+	d3.selectAll(".link")
+	 	.filter(function(d) {
+	  		return ((nodeData.index == d.source.index) || (nodeData.index == d.target.index));
+	 	})
+	 	.each(function(d) {
+	 		d3.select(this).classed("link--node-hovered", false);
+
+	 		// This is to highlight the targeted nodes
+	 		targetNodeKey = d.source.index === nodeData.index ? d.target.index : d.source.index;
+	 		targetNodes[targetNodeKey] = true;
+	 	});
+
+	d3.selectAll(".node")
+		.filter(function(d) {
+			if (targetNodes[d.index]) {
+				return true;
+			}
+			else {
+				return false;
+			}
+	 	})
+	 	.each(function(d) {
+	 		var targetNode, nodeText;
+
+	 		targetNode = d3.select(this);
+	 		nodeText = d3.select(this.parentNode).select("text");
+
+	 		d3.select(this).classed("node--highlight-edge-target", false);
+	 		nodeText.classed("node-title--highlight-edge-target", false);
+	 	});
 }
 
 $(document).ready(function() {

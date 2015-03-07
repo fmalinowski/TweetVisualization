@@ -97,9 +97,9 @@ public class ServerRunner implements IServerRunner{
 				os.close();
 				htmlFileInputStream.close();
 			}
-			else if (path.equals("/style.css")) {
+			else if (path.equals("/style.css") || path.equals("/style_hashtag_graph.css")) {
 				
-				InputStream htmlFileInputStream = ServerRunner.class.getClassLoader().getResourceAsStream("resources/style.css");
+				InputStream htmlFileInputStream = ServerRunner.class.getClassLoader().getResourceAsStream("resources" + path);
 				
 				Headers h = t.getResponseHeaders();
 				h.add("Content-Type", "text/css");
