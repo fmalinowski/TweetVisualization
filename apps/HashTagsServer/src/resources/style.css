@@ -17,9 +17,9 @@ body {
 .spinner-container {
 	display: block;
 	position: absolute;
-	top: 80%;
-	transform: translateY(-80%);
-	-webkit-transform: translateY(-80%);
+	top: 75%;
+	transform: translateY(-75%);
+	-webkit-transform: translateY(-75%);
 	width: 100%;
 }
 
