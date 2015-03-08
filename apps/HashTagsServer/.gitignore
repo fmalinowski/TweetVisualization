@@ -17,3 +17,4 @@ local.properties
 .buildpath
 .target
 .texlipse
+src/edu/ucsb/ns202/offline/MySQLCredentials.java
