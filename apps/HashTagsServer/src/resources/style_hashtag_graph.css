@@ -1,0 +1,48 @@
+.graph-container {
+	border: 1px solid black;
+}
+
+.results__info {
+	position: absolute;
+}
+
+.node {
+	stroke: black;
+	stroke-width: 1.5px;
+}
+
+.node--hovered {
+	stroke: blue;
+	fill: blue;
+}
+
+.node--highlight-edge-target {
+	stroke: #13B2FF;
+	fill: #13B2FF;
+}
+
+.link {
+	stroke: #999;
+	stroke-opacity: .6;
+}
+
+.link--node-hovered {
+	stroke: #859CFF;
+	stroke-opacity: .6;
+	stroke-width: 5;
+}
+
+.node-title {
+	fill: red;
+	font-size: 10px sans-serif;
+	pointer-events: none;
+	text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+}
+
+.node-title--node-hovered {
+	fill: blue;
+}
+
+.node-title--highlight-edge-target {
+	fill: #13B2FF;
+}
