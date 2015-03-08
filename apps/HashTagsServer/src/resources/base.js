@@ -11,9 +11,10 @@ $(document).ready(function() {
 			}
 		}).done(function(data) {
 			$(".js-hashtag").blur();
-			$(".top-header").show();
+			$(".top-header").addClass("top-header--active");
 			$(".vertical-container").addClass("vertical-container--fixed-top");
-			$(".results").show();
+
+			$(".results").addClass("results--active");
 			displayGraph(data)
 		});
 

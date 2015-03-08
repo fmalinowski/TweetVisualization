@@ -14,22 +14,24 @@ body {
 	margin: 0;
 }
 
-h1 {
-	font-family: 'Oswald', sans-serif;
-	color: #4099FF;
-	font-size: 43px;
-	font-style: bold;
-	text-align: center;
-}
-
 .top-header {
 	background-color: #4099FF;
-	display: none;
 	height: 58px;
 	left: 0;
+	opacity: 0;
 	position: fixed;
 	top: 0;
 	width: 100%;
+
+	transition: opacity 1.5s ease 0.7s;
+	-webkit-transition: opacity 1.5s ease 0.7s;
+	-moz-transition: opacity 1.5s ease 0.7s;
+	-o-transition: opacity 1.5s ease 0.7s;
+	-ms-transition: opacity 1.5s ease 0.7s;
+}
+
+.top-header--active {
+	opacity: 1;
 }
 
 .vertical-container {
@@ -38,6 +40,12 @@ h1 {
 	transform: translateY(-50%);
 	-webkit-transform: translateY(-50%);
 	width: 100%;
+
+	transition: top 0.7s linear;
+	-webkit-transition: top 0.7s linear;
+	-moz-transition: top 0.7s linear;
+	-o-transition: top 0.7s linear;
+	-ms-transition: top 0.7s linear;
 }
 
 .vertical-container--fixed-top {
@@ -48,7 +56,18 @@ h1 {
 }
 
 .vertical-container__title {
+	font-family: 'Oswald', sans-serif;
+	color: #4099FF;
+	font-size: 43px;
+	font-style: bold;
 	margin-top: 0;
+	text-align: center;
+
+	transition: all 0.7s linear;
+	-webkit-transition: all 0.7s linear;
+	-moz-transition: all 0.7s linear;
+	-o-transition: all 0.7s linear;
+	-ms-transition: all 0.7s linear;
 }
 
 .vertical-container--fixed-top .vertical-container__title {
@@ -113,11 +132,21 @@ h1 {
 }
 
 .results {
-	display: none;
+	opacity: 0;
 	position: absolute;
 	text-align: center;
 	top: 58px;
 	width: 100%;
+
+	transition: opacity 1.5s ease 0.7s;
+	-webkit-transition: opacity 1.5s ease 0.7s;
+	-moz-transition: opacity 1.5s ease 0.7s;
+	-o-transition: opacity 1.5s ease 0.7s;
+	-ms-transition: opacity 1.5s ease 0.7s;
+}
+
+.results--active {
+	opacity: 1;
 }
 
 .block_title {
