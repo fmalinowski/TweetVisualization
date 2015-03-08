@@ -47,6 +47,10 @@ h1 {
 	-webkit-transform: initial;
 }
 
+.vertical-container__title {
+	margin-top: 0;
+}
+
 .vertical-container--fixed-top .vertical-container__title {
 	font-size: 0;
 }
