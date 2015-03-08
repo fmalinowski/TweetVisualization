@@ -82,7 +82,7 @@ public class ServerRunner implements IServerRunner{
 			}
 			else if (path.equals("/visualization.js") || path.equals("/base.js")) {
 				
-				InputStream htmlFileInputStream = ServerRunner.class.getClassLoader().getResourceAsStream("resources/visualization.js");
+				InputStream htmlFileInputStream = ServerRunner.class.getClassLoader().getResourceAsStream("resources" + path);
 				
 				Headers h = t.getResponseHeaders();
 				h.add("Content-Type", "application/javascript");
