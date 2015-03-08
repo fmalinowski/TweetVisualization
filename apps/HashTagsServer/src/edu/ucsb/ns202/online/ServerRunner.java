@@ -47,10 +47,10 @@ public class ServerRunner implements IServerRunner {
 			hashtagQueryProcessor = new HashtagQueryProcessor(
 					params.get("hashtag"));
 			JSONObject jsonResponse = null;
-			
-			// Send the query
-			HashtagQueryProcessor.placeHolder = TwitterRest.handleSearch(query);
+
 			try {
+				// Send the query
+				HashtagQueryProcessor.placeHolder = TwitterRest.handleSearch(query);
 				jsonResponse = hashtagQueryProcessor.query();
 			} catch (JSONException e) {
 				e.printStackTrace();
