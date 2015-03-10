@@ -175,21 +175,3 @@ function highlighTargetNodes(highlightBool, targetNodes) {
 	 		nodeText.classed("node-title--highlight-edge-target", highlightBool);
 	 	});
 }
-
-$(document).ready(function() {
-
-	$(".js-submit").on("click", function(){
-		var hashtagValue = $(".js-hashtag").val();
-
-		$.ajax({
-			url: "request",
-			type: "GET",
-			data: {
-				hashtag: hashtagValue
-			}
-		}).done(function(data) {
-			displayGraph(data)
-		});
-	});
-	
-});
