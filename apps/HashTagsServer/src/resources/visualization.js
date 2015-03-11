@@ -55,7 +55,8 @@ function createEdges(JSONdata, graphFrame) {
 		.selectAll(".link")
 		.data(JSONdata.links, function(d) { return d.source.id + "-" + d.target.id; })
 		.enter().append("line")
-		.classed("link", true);
+		.classed("link", true)
+		.style("stroke-width", function(d) { return d.weight; });
 		// We could have used .style("stroke-width", function(d) { return Math.sqrt(d.value);}); //value of 5 max!
 		// to have a stroker link according to the value data attribute
 }
@@ -71,10 +72,11 @@ function createNodes(JSONdata, graphFrame, forceGraph) {
 	// Append the circles
 	nodesGroup.append("circle")
 		.classed("node", true)
-		.attr("r", 5) // We could make a function to get the radius bigger: attr(r, function(d) { return d.value; })
+		.attr("r", function(d) { return d.radius; }) // We could make a function to get the radius bigger: attr(r, function(d) { return d.value; })
 		.on("mouseover", mouseoverNode)
 		.on("mouseout", mouseoutNode)
 		.call(forceGraph.drag);
+		//.attr("r", 5) // We could make a function to get the radius bigger: attr(r, function(d) { return d.value; })
 		// We could have used .style("fill", function(d) { return color(d.group); }) 
 		// to color in different colros using the data attribute group.
 

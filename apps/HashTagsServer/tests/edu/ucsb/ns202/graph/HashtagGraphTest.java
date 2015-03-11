@@ -1,12 +1,13 @@
-package edu.ucsb.ns202;
+package edu.ucsb.ns202.graph;
 
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 
 import org.junit.Test;
-
 import org.json.JSONArray;
+
+import edu.ucsb.ns202.graph.HashtagGraph;
 
 public class HashtagGraphTest {
 
@@ -46,6 +47,11 @@ public class HashtagGraphTest {
 		assertTrue(hashtagGraph.hasNode("#hashTag2"));
 		assertTrue(hashtagGraph.hasNode("@duDe"));
 		assertTrue(hashtagGraph.hasNode("don't care"));
+	}
+	
+	@Test
+	public void testAddNodeWithIncrementOfWeight() {
+		
 	}
 
 	@Test
@@ -90,6 +96,11 @@ public class HashtagGraphTest {
 		hashtagGraph.addEgde("Inexistant Node1", "Inexistant Node2");
 		assertTrue(hashtagGraph.hasEdge("Inexistant Node1", "Inexistant Node2"));
 		assertTrue(hashtagGraph.hasEdge("Inexistant Node2", "Inexistant Node1"));
+	}
+	
+	@Test
+	public void testAddEdgeWithIncrementOfWeight() {
+		
 	}
 	
 	@Test
@@ -149,23 +160,23 @@ public class HashtagGraphTest {
 	
 	@SuppressWarnings("deprecation")
 	@Test
-	public void testGetNodes() {
+	public void testGetNodeStringList() {
 		HashtagGraph hashtagGraph = new HashtagGraph();
 		
-		assertEquals(0, hashtagGraph.getNodes().size());
+		assertEquals(0, hashtagGraph.getNodeStringList().size());
 		hashtagGraph.addNode("noDe1");
-		assertArrayEquals(new String[]{"noDe1"}, hashtagGraph.getNodes().toArray());
+		assertArrayEquals(new String[]{"noDe1"}, hashtagGraph.getNodeStringList().toArray());
 		hashtagGraph.addEgde("NodE2", "NODe3");
-		assertArrayEquals(new String[]{"noDe1", "NodE2", "NODe3"}, hashtagGraph.getNodes().toArray());
+		assertArrayEquals(new String[]{"noDe1", "NodE2", "NODe3"}, hashtagGraph.getNodeStringList().toArray());
 		hashtagGraph.addEgde("NodE1", "NODe4");
-		assertArrayEquals(new String[]{"noDe1", "NODe4", "NodE2", "NODe3"}, hashtagGraph.getNodes().toArray());
+		assertArrayEquals(new String[]{"noDe1", "NodE2", "NODe3", "NODe4"}, hashtagGraph.getNodeStringList().toArray());
 		hashtagGraph.addNode("noDe4");
-		assertArrayEquals(new String[]{"noDe1", "NODe4", "NodE2", "NODe3"}, hashtagGraph.getNodes().toArray());
+		assertArrayEquals(new String[]{"noDe1", "NodE2", "NODe3", "NODe4"}, hashtagGraph.getNodeStringList().toArray());
 		hashtagGraph.addNode("noDe5");
-		assertArrayEquals(new String[]{"noDe1", "NODe4", "noDe5", "NodE2", "NODe3"}, hashtagGraph.getNodes().toArray());
+		assertArrayEquals(new String[]{"noDe1", "NodE2", "NODe3", "NODe4", "noDe5"}, hashtagGraph.getNodeStringList().toArray());
 		
 		hashtagGraph.getNodes().remove("NODe4");
-		assertArrayEquals(new String[]{"noDe1", "NODe4", "noDe5", "NodE2", "NODe3"}, hashtagGraph.getNodes().toArray());
+		assertArrayEquals(new String[]{"noDe1", "NodE2", "NODe3", "NODe4", "noDe5"}, hashtagGraph.getNodeStringList().toArray());
 	}
 	
 	@Test
@@ -178,7 +189,7 @@ public class HashtagGraphTest {
 		hashtagGraph.addNode("node4");
 		
 		assertEquals(4, hashtagGraph.getNodesAsJSON().length());
-		assertEquals("[{\"index\":0,\"name\":\"noDe1\"},{\"index\":3,\"name\":\"node4\"},{\"index\":1,\"name\":\"noDE2\"},{\"index\":2,\"name\":\"NODe3\"}]", hashtagGraph.getNodesAsJSON().toString());
+		assertEquals("[{\"id\":0,\"name\":\"noDe1\"},{\"id\":1,\"name\":\"noDE2\"},{\"id\":2,\"name\":\"NODe3\"},{\"id\":3,\"name\":\"node4\"}]", hashtagGraph.getNodesAsJSON().toString());
 	}
 	
 	@Test
@@ -215,8 +226,24 @@ public class HashtagGraphTest {
 		hashtagGraph.addEgde("node3", "node2");
 		hashtagGraph.addEgde("node3", "node4");
 		
-		String expected = "{\"nodes\":[{\"index\":0,\"name\":\"noDe1\"},{\"index\":3,\"name\":\"node4\"},{\"index\":1,\"name\":\"noDE2\"},{\"index\":2,\"name\":\"NODe3\"}],";
+		String expected = "{\"nodes\":[{\"id\":0,\"name\":\"noDe1\"},{\"id\":1,\"name\":\"noDE2\"},{\"id\":2,\"name\":\"NODe3\"},{\"id\":3,\"name\":\"node4\"}],";
 		expected += "\"links\":[{\"source\":0,\"target\":1},{\"source\":0,\"target\":2},{\"source\":0,\"target\":3},{\"source\":1,\"target\":2},{\"source\":2,\"target\":3}]}";
 		assertEquals(expected, hashtagGraph.getNodesAndEdgesAsJSON().toString());
 	}
+	
+	@Test
+	public void testGetHashtagNode() {
+		
+	}
+	
+	@Test
+	public void testGetHashtagEdge() {
+		
+	}
+	
+	@Test
+	public void testGetNodes() {
+		
+	}
+	
 }

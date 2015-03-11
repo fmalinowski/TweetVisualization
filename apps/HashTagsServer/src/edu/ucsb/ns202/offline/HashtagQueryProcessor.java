@@ -10,7 +10,7 @@ import java.util.Arrays;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import edu.ucsb.ns202.HashtagGraph;
+import edu.ucsb.ns202.graph.HashtagGraph;
 
 public class HashtagQueryProcessor {
 	
@@ -63,7 +63,7 @@ public class HashtagQueryProcessor {
 		String hashtagSource, hashtagTarget;
 		
 		if (hashtagsArrayList.length == 1) {
-			hashtagGraph.addNode(hashtagsArrayList[0]);
+			hashtagGraph.addNode(hashtagsArrayList[0], true);
 		}
 		else {
 			System.out.println("-----");
@@ -74,7 +74,7 @@ public class HashtagQueryProcessor {
 				
 				for (int j = i+1; j < hashtagsArrayList.length; j++) {
 					hashtagTarget = hashtagsArrayList[j];
-					hashtagGraph.addEgde(hashtagSource, hashtagTarget);
+					hashtagGraph.addEgde(hashtagSource, hashtagTarget, true);
 					System.out.println("EDGE: S:" + hashtagSource + "|T:" + hashtagTarget);
 				}
 			}
