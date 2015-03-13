@@ -3,7 +3,7 @@ package edu.ucsb.ns202.online;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.ucsb.ns202.HashtagGraph;
+import edu.ucsb.ns202.graph.HashtagGraph;
 import twitter4j.*;
 import twitter4j.conf.ConfigurationBuilder;
 

@@ -3,7 +3,7 @@ package edu.ucsb.ns202.online;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import edu.ucsb.ns202.HashtagGraph;
+import edu.ucsb.ns202.graph.HashtagGraph;
 
 public class HashtagQueryProcessor {
 

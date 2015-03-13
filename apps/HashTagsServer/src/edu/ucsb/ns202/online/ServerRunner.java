@@ -15,9 +15,9 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
-import edu.ucsb.ns202.HashtagGraph;
 import edu.ucsb.ns202.IServerRunner;
 import edu.ucsb.ns202.ParamUtilities;
+import edu.ucsb.ns202.graph.HashtagGraph;
 
 public class ServerRunner implements IServerRunner {
 

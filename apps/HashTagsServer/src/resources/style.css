@@ -103,6 +103,7 @@ body {
 }
 
 .vertical-container--fixed-top {
+	position: fixed;
 	background-color: #EDEDED;
 	padding: 3px 0;
 	top: 0;

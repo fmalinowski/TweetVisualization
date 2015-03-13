@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 
-import edu.ucsb.ns202.HashtagGraph;
+import edu.ucsb.ns202.graph.HashtagGraph;
 import twitter4j.Query;
 import twitter4j.QueryResult;
 import twitter4j.RateLimitStatus;
