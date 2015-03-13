@@ -1,10 +1,12 @@
 package edu.ucsb.ns202.graph;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.json.JSONArray;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -20,30 +22,53 @@ public class HashtagGraph {
 	private int totalNodesNumber = 0;
 
 	public void addNode(String hashtag) {
+		HashtagNode hashtagNode = this.addNodeWithoutIncrementingWeight(hashtag);
+		this.incrementNodeWeight(hashtag);
+	}
+	
+	private HashtagNode addNodeWithoutIncrementingWeight(String hashtag) {
 		String hashTagKey = hashtag.toLowerCase();
-		if (!this.graph.containsKey(hashTagKey)) {
-			HashtagNode hashtagNode = new HashtagNode(totalNodesNumber, hashtag);
+		HashtagNode hashtagNode = this.hashtagNodeMetaDataHashMap.get(hashTagKey);
+		
+		if (hashtagNode == null) {
+			hashtagNode = new HashtagNode(totalNodesNumber, hashtag);
 			
 			this.graph.put(hashTagKey, new ArrayList<HashtagEdge>());
 			this.hashtagNodeMetaDataHashMap.put(hashTagKey, hashtagNode);
 			this.hashtagIDarrayList.add(hashtagNode);
 			
-			totalNodesNumber++;
+			this.totalNodesNumber++;
 		}
+		
+		return hashtagNode;
 	}
 	
-	public void addNode(String hashtag, Boolean incrementNodeWeight) {
-		this.addNode(hashtag);
-		if (incrementNodeWeight) {
-			this.getHashtagNode(hashtag).incrementTotalTweetNumberWithOneHashtag();
+	
+	public void incrementNodeWeight(String hashtag) {
+		HashtagNode hashtagNode = this.getHashtagNode(hashtag);
+		
+		if (hashtagNode != null) {
+			hashtagNode.incrementTotalTweetNumberWithOneHashtag();
 			this.totalNumberOfTweets++;
 			this.totalNumberOfTweetsWithOneHashtag++;
 		}
 	}
 	
+	
+	
+//	public void addNode(String hashtag, Boolean incrementNodeWeight) {
+//		this.addNode(hashtag);
+//		if (incrementNodeWeight) {
+//			this.getHashtagNode(hashtag).incrementTotalTweetNumberWithOneHashtag();
+//			this.totalNumberOfTweets++;
+//			this.totalNumberOfTweetsWithOneHashtag++;
+//		}
+//	}
+	
 	public void addEgde(String hashtagSource, String hashtagTarget) {
 		HashtagNode hashtagNodeSource;
 		HashtagNode hashtagNodeTarget;
+		HashtagEdge hashtagEdge1, hashtagEdge2;
 		String hashTagSourceKey = hashtagSource.toLowerCase();
 		String hashTagTargetKey = hashtagTarget.toLowerCase();
 		
@@ -52,32 +77,53 @@ public class HashtagGraph {
 		}
 		
 		if (!this.hasNode(hashtagSource)) {
-			this.addNode(hashtagSource);
+			this.addNodeWithoutIncrementingWeight(hashtagSource); //Add function addNodeWithoutIncrementingWeight();
 		}
 		if (!this.hasNode(hashtagTarget)) {
-			this.addNode(hashtagTarget);
+			this.addNodeWithoutIncrementingWeight(hashtagTarget); //Add function addNodeWithoutIncrementingWeight();
 		}
 		
 		hashtagNodeSource = this.hashtagNodeMetaDataHashMap.get(hashTagSourceKey);
 		hashtagNodeTarget = this.hashtagNodeMetaDataHashMap.get(hashTagTargetKey);
 		
 		if (!this.hasEdge(hashTagSourceKey, hashTagTargetKey)) {
-			HashtagEdge hashtagEdge = new HashtagEdge(hashtagNodeSource, hashtagNodeTarget);
-			this.graph.get(hashTagSourceKey).add(hashtagEdge);
+			hashtagEdge1 = new HashtagEdge(hashtagNodeSource, hashtagNodeTarget);
+			this.graph.get(hashTagSourceKey).add(hashtagEdge1);
+		}
+		else {
+			hashtagEdge1 = this.getHashtagEdge(hashTagSourceKey, hashTagTargetKey);
 		}
 		if (!this.hasEdge(hashTagTargetKey, hashTagSourceKey)) {
-			HashtagEdge hashtagEdge = new HashtagEdge(hashtagNodeTarget, hashtagNodeSource);
-			this.graph.get(hashTagTargetKey).add(hashtagEdge);
+			hashtagEdge2 = new HashtagEdge(hashtagNodeTarget, hashtagNodeSource);
+			this.graph.get(hashTagTargetKey).add(hashtagEdge2);
 		}
+		else {
+			hashtagEdge2 = this.getHashtagEdge(hashTagTargetKey, hashTagSourceKey);
+		}
+		
+		hashtagEdge1.incrementNumberOfTweets();
+		hashtagEdge2.incrementNumberOfTweetsWithoutIncrementingTweetNbAtNodes();
+		this.totalNumberOfTweets++;
 	}
 	
-	public void addEgde(String hashtagSource, String hashtagTarget, Boolean incrementEdgeWeight) {
-		this.addEgde(hashtagSource, hashtagTarget);
-		if (incrementEdgeWeight) {
-			HashtagEdge hashtagEdge1 = this.getHashtagEdge(hashtagSource, hashtagTarget);
-			HashtagEdge hashtagEdge2 = this.getHashtagEdge(hashtagTarget, hashtagSource);
+//	public void addEgde(String hashtagSource, String hashtagTarget, Boolean incrementEdgeWeight) {
+//		this.addEgde(hashtagSource, hashtagTarget);
+//		if (incrementEdgeWeight) {
+//			HashtagEdge hashtagEdge1 = this.getHashtagEdge(hashtagSource, hashtagTarget);
+//			HashtagEdge hashtagEdge2 = this.getHashtagEdge(hashtagTarget, hashtagSource);
+//			hashtagEdge1.incrementNumberOfTweets();
+//			hashtagEdge2.incrementNumberOfTweetsWithoutIncrementingTweetNbAtNodes();
+//			this.totalNumberOfTweets++;
+//		}
+//	}
+	
+	public void incrementEdgeWeight(String hashtagSource, String hashtagTarget) {
+		HashtagEdge hashtagEdge1 = this.getHashtagEdge(hashtagSource, hashtagTarget);
+		HashtagEdge hashtagEdge2 = this.getHashtagEdge(hashtagTarget, hashtagSource);
+		
+		if (hashtagEdge1 != null && hashtagEdge2 != null) {
 			hashtagEdge1.incrementNumberOfTweets();
-			hashtagEdge2.incrementNumberOfTweets();
+			hashtagEdge2.incrementNumberOfTweetsWithoutIncrementingTweetNbAtNodes();
 			this.totalNumberOfTweets++;
 		}
 	}
@@ -172,6 +218,7 @@ public class HashtagGraph {
 		for (HashtagNode hashtagNode : this.hashtagIDarrayList) {			
 			nodeJSON = new JSONObject();
 			try {
+				System.out.println("Node name:" + hashtagNode.getNameWithCase() + " | id:" + hashtagNode.getNodeID() + " | NbTweets:" + hashtagNode.getTotalTweetNumber() + " | totalTweets:" + this.totalNumberOfTweets  + " | radius:" + computeD3NodeRadius(hashtagNode));
 				nodeJSON.put("name", hashtagNode.getNameWithCase());
 				nodeJSON.put("id", hashtagNode.getNodeID());
 				nodeJSON.put("radius", computeD3NodeRadius(hashtagNode));
@@ -201,10 +248,10 @@ public class HashtagGraph {
 				if (hashtagNodeSource.getNodeID() < hashtagNodeTarget.getNodeID()) {
 					edgeJSON = new JSONObject();
 					try {
+						System.out.println("edge source:" + hashtagNodeSource.getNameWithCase() + " | target:" + hashtagNodeTarget.getNameWithCase() + " | nbTweets:" + hashtagEdge.getNumberOfTweets() + " | totalTweets:" + this.totalNumberOfTweets + " | weight:" + computeD3EdgeWeight(hashtagEdge));
 						edgeJSON.put("source", hashtagNodeSource.getNodeID());
 						edgeJSON.put("target", hashtagNodeTarget.getNodeID());
 						edgeJSON.put("weight", computeD3EdgeWeight(hashtagEdge));
-						System.out.println("wEdge:" + ((double)hashtagEdge.getNumberOfTweets())/this.totalNumberOfTweets + " | nbTweetsEdge:" + hashtagEdge.getNumberOfTweets() + " | totalTweets:" + this.totalNumberOfTweets);
 					} catch (JSONException e) {
 						e.printStackTrace();
 					}
@@ -222,20 +269,24 @@ public class HashtagGraph {
 	public double computeD3EdgeWeight(HashtagEdge hashtagEdge) {
 		// minimum width-stroke for D3: 0.3 (preferred: 0.8)
 		// maximum width-stroke for D3: 7
-		double minD3StrokeWidth, maxD3StrokeWidth, minimumPossibleTweetFraction, edgeTweetFraction;
+		double minD3StrokeWidth, maxD3StrokeWidth, minimumPossibleTweetFraction;
+		double edgeTweetFraction, result;
 		
 		minD3StrokeWidth = 0.8;
-		maxD3StrokeWidth = 7;
+		maxD3StrokeWidth = 7.0;
 		minimumPossibleTweetFraction = 1.0 / this.totalNumberOfTweets;
 		
 		edgeTweetFraction = (double)hashtagEdge.getNumberOfTweets()/this.totalNumberOfTweets;
 				
-		return minD3StrokeWidth + (maxD3StrokeWidth - minD3StrokeWidth) * 
+		result = minD3StrokeWidth + (maxD3StrokeWidth - minD3StrokeWidth) * 
 				(edgeTweetFraction-minimumPossibleTweetFraction)/(1-minimumPossibleTweetFraction);
+		
+		return new BigDecimal(result).setScale(2, RoundingMode.CEILING).doubleValue();
 	}
 	
 	public double computeD3NodeRadius(HashtagNode hashtagNode) {
 		double minD3Radius, maxD3Radius, minimumPossibleTweetFraction, nodeTweetFraction;
+		double result;
 		
 		// minimum radius for D3: 1
 		// maximum radius for D3: 15
@@ -245,7 +296,9 @@ public class HashtagGraph {
 		
 		nodeTweetFraction = (double)hashtagNode.getTotalTweetNumber()/this.totalNumberOfTweets; 
 		
-		return minD3Radius + (maxD3Radius - minD3Radius) * 
+		result = minD3Radius + (maxD3Radius - minD3Radius) * 
 				(nodeTweetFraction-minimumPossibleTweetFraction)/(1-minimumPossibleTweetFraction);
+		
+		return new BigDecimal(result).setScale(2, RoundingMode.CEILING).doubleValue();
 	}
 }

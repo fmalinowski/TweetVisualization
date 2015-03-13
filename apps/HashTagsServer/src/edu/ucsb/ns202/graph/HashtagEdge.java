@@ -29,4 +29,8 @@ public class HashtagEdge {
 		this.target.incrementTotalTweetNumber();
 		this.totalTweets++;
 	}
+	
+	protected void incrementNumberOfTweetsWithoutIncrementingTweetNbAtNodes() {
+		this.totalTweets++;
+	}
 }

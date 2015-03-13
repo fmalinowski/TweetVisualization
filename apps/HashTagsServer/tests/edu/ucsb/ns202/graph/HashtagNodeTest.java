@@ -7,23 +7,36 @@ import org.junit.Test;
 public class HashtagNodeTest {
 
 	@Test
-	public void testGetNameWithCase() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testGetNameWithoutCase() {
-		fail("Not yet implemented");
+	public void testGetNameWithCaseAndWithoutCase() {
+		HashtagNode hashtagNode = new HashtagNode(1, "FlippingTest");
+		assertEquals("FlippingTest", hashtagNode.getNameWithCase());
+		assertEquals("flippingtest", hashtagNode.getNameWithoutCase());
 	}
 
 	@Test
 	public void testIncrementTotalTweetNumberWithOneHashtag() {
-		fail("Not yet implemented");
+		HashtagNode hashtagNode = new HashtagNode(1, "FlippingTest");
+		
+		assertEquals(0, hashtagNode.getTotalTweetNumberWithOneHashtag());
+		hashtagNode.incrementTotalTweetNumberWithOneHashtag();
+		assertEquals(1, hashtagNode.getTotalTweetNumberWithOneHashtag());
+		hashtagNode.incrementTotalTweetNumber();
+		assertEquals(1, hashtagNode.getTotalTweetNumberWithOneHashtag());
+		hashtagNode.incrementTotalTweetNumberWithOneHashtag();
+		assertEquals(2, hashtagNode.getTotalTweetNumberWithOneHashtag());
 	}
 
 	@Test
 	public void testIncrementTotalTweetNumber() {
-		fail("Not yet implemented");
+		HashtagNode hashtagNode = new HashtagNode(1, "FlippingTest");
+		
+		assertEquals(0, hashtagNode.getTotalTweetNumber());
+		hashtagNode.incrementTotalTweetNumber();
+		assertEquals(1, hashtagNode.getTotalTweetNumber());
+		hashtagNode.incrementTotalTweetNumberWithOneHashtag();
+		assertEquals(2, hashtagNode.getTotalTweetNumber());
+		hashtagNode.incrementTotalTweetNumber();
+		assertEquals(3, hashtagNode.getTotalTweetNumber());
 	}
 
 }

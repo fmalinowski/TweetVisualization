@@ -25,6 +25,7 @@ public class HashtagNode {
 	
 	protected void incrementTotalTweetNumberWithOneHashtag() {
 		this.totalTweetNumberWithOneHashtag++;
+		this.totalTweetNumber++;
 	}
 	
 	public int getTotalTweetNumberWithOneHashtag() {

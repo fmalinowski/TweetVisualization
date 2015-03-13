@@ -48,14 +48,6 @@ public class HashtagQueryProcessor {
 			
 		this.mySqlAccessor.close();
 		
-//		HashtagGraph hashtagGraph = new HashtagGraph();
-//		hashtagGraph.addEgde("#Node1", "#nODe2");
-//		hashtagGraph.addEgde("#Node1", "#nODe3");
-//		hashtagGraph.addEgde("#Node4", "NODE5");
-//		hashtagGraph.addEgde("#Node4", "NODE6");
-//		hashtagGraph.addEgde("#Node4", "NODE7");
-//		hashtagGraph.addEgde("#Node4", "#NODE1");
-		
 		return hashtagGraph.getNodesAndEdgesAsJSON();
 	}
 	
@@ -63,7 +55,12 @@ public class HashtagQueryProcessor {
 		String hashtagSource, hashtagTarget;
 		
 		if (hashtagsArrayList.length == 1) {
-			hashtagGraph.addNode(hashtagsArrayList[0], true);
+			if (hashtagGraph.hasNode(hashtagsArrayList[0])) {
+				hashtagGraph.incrementNodeWeight(hashtagsArrayList[0]);
+			}
+			else {
+				hashtagGraph.addNode(hashtagsArrayList[0]);
+			}
 		}
 		else {
 			System.out.println("-----");
@@ -74,8 +71,13 @@ public class HashtagQueryProcessor {
 				
 				for (int j = i+1; j < hashtagsArrayList.length; j++) {
 					hashtagTarget = hashtagsArrayList[j];
-					hashtagGraph.addEgde(hashtagSource, hashtagTarget, true);
-					System.out.println("EDGE: S:" + hashtagSource + "|T:" + hashtagTarget);
+					if (hashtagGraph.hasEdge(hashtagSource, hashtagTarget)) {
+						hashtagGraph.incrementEdgeWeight(hashtagSource, hashtagTarget);
+					}
+					else {
+						hashtagGraph.addEgde(hashtagSource, hashtagTarget);
+					}
+//					System.out.println("EDGE: S:" + hashtagSource + "|T:" + hashtagTarget);
 				}
 			}
 		}
