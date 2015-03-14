@@ -30,17 +30,17 @@ public class HashtagNode {
 		this.hashtagOrMention = Type.MENTION;
 	}
 	
-	public String getType() {
-		String type;
+	public int getType() {
+		int type;
 		switch(hashtagOrMention) {
 		case HASHTAG:
-			type = "#";
+			type = 0;
 			break;
 		case MENTION:
-			type = "@";
+			type = 1;
 			break;
 		default: 
-			type = "err";
+			type = -1;
 			break;
 		}
 		return type;

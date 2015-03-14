@@ -12,6 +12,12 @@
 	stroke-width: 1.5px;
 }
 
+.node--mention {
+	fill: #32f432;
+	stroke: #d03b29;
+	stroke-width: 1.5px;
+}
+
 .node--hovered {
 	stroke: #99ff40;
 	fill: #ff4099;

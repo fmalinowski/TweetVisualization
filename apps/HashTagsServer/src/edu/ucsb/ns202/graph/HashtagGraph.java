@@ -182,6 +182,7 @@ public class HashtagGraph {
 				nodeJSON.put("name", hashtagNode.getNameWithCase());
 				nodeJSON.put("id", hashtagNode.getNodeID());
 				nodeJSON.put("radius", computeD3NodeRadius(hashtagNode));
+				nodeJSON.put("type", hashtagNode.getType());
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
