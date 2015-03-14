@@ -182,6 +182,7 @@ public class HashtagGraph {
 				nodeJSON.put("name", hashtagNode.getNameWithCase());
 				nodeJSON.put("id", hashtagNode.getNodeID());
 				nodeJSON.put("radius", computeD3NodeRadius(hashtagNode));
+				nodeJSON.put("type", hashtagNode.getType());
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -268,6 +269,9 @@ public class HashtagGraph {
 		
 		if (hashtagNode == null) {
 			hashtagNode = new HashtagNode(totalNodesNumber, hashtag);
+			if(hashTagKey.startsWith("@")) {
+				hashtagNode.setTypeMention();
+			}
 			
 			this.graph.put(hashTagKey, new ArrayList<HashtagEdge>());
 			this.hashtagNodeMetaDataHashMap.put(hashTagKey, hashtagNode);

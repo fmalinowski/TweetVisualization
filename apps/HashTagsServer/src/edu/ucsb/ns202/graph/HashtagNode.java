@@ -1,10 +1,13 @@
 package edu.ucsb.ns202.graph;
 
 public class HashtagNode {
+	
 	private int nodeID;
 	private String nameWithCase;
 	private int totalTweetNumberWithOneHashtag = 0;
 	private int totalTweetNumber = 0;
+	private enum Type { HASHTAG, MENTION }
+	private Type hashtagOrMention = Type.HASHTAG;
 	
 	public HashtagNode(int nodeID, String nameWithCase) {
 		this.nodeID = nodeID;
@@ -21,6 +24,26 @@ public class HashtagNode {
 	
 	public String getNameWithoutCase() {
 		return this.nameWithCase.toLowerCase();
+	}
+	
+	public void setTypeMention() {
+		this.hashtagOrMention = Type.MENTION;
+	}
+	
+	public int getType() {
+		int type;
+		switch(hashtagOrMention) {
+		case HASHTAG:
+			type = 0;
+			break;
+		case MENTION:
+			type = 1;
+			break;
+		default: 
+			type = -1;
+			break;
+		}
+		return type;
 	}
 	
 	protected void incrementTotalTweetNumberWithOneHashtag() {

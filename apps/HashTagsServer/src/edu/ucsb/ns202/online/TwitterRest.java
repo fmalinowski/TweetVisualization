@@ -38,19 +38,25 @@ public class TwitterRest {
 	
 			System.out.println("------------hashMap------------");
 			System.out.println(searchParam + ": " + hashMap.get(searchParam));
-			for (int i = 0; i < 7; i++) {
-				System.out.println(searchList.get(i) + ": "
-						+ hashMap.get(searchList.get(i)));
-	
-				List<String> values = hashMap.get(searchList.get(i));
-				// For loop goes here to add edges
-				for (int j = 0; j < values.size(); j++) {
-					hashtagGraph.addEdge(searchList.get(i), values.get(j));
+			if(searchList.size() > 0) {
+				for (int i = 0; i < 7; i++) {
+					System.out.println(searchList.get(i) + ": "
+							+ hashMap.get(searchList.get(i)));
+		
+					List<String> values = hashMap.get(searchList.get(i));
+					// For loop goes here to add edges
+					if(values.size() > 0) {
+					for (int j = 0; j < values.size(); j++) {
+							hashtagGraph.addEdge(searchList.get(i), values.get(j));
+						}
+					}
 				}
-			}
-			List<String> value = hashMap.get(searchParam);
-			for (int j = 0; j < value.size(); j++) {
-				hashtagGraph.addEdge(searchParam, value.get(j));
+				List<String> value = hashMap.get(searchParam);
+				if(value.size() > 0) {
+					for (int j = 0; j < value.size(); j++) {
+						hashtagGraph.addEdge(searchParam, value.get(j));
+					}
+				}
 			}
 		}
 
