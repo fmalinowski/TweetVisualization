@@ -24,25 +24,7 @@ public class HashtagGraph {
 	public void addNode(String hashtag) {
 		HashtagNode hashtagNode = this.addNodeWithoutIncrementingWeight(hashtag);
 		this.incrementNodeWeight(hashtag);
-	}
-	
-	private HashtagNode addNodeWithoutIncrementingWeight(String hashtag) {
-		String hashTagKey = hashtag.toLowerCase();
-		HashtagNode hashtagNode = this.hashtagNodeMetaDataHashMap.get(hashTagKey);
-		
-		if (hashtagNode == null) {
-			hashtagNode = new HashtagNode(totalNodesNumber, hashtag);
-			
-			this.graph.put(hashTagKey, new ArrayList<HashtagEdge>());
-			this.hashtagNodeMetaDataHashMap.put(hashTagKey, hashtagNode);
-			this.hashtagIDarrayList.add(hashtagNode);
-			
-			this.totalNodesNumber++;
-		}
-		
-		return hashtagNode;
-	}
-	
+	}	
 	
 	public void incrementNodeWeight(String hashtag) {
 		HashtagNode hashtagNode = this.getHashtagNode(hashtag);
@@ -54,18 +36,7 @@ public class HashtagGraph {
 		}
 	}
 	
-	
-	
-//	public void addNode(String hashtag, Boolean incrementNodeWeight) {
-//		this.addNode(hashtag);
-//		if (incrementNodeWeight) {
-//			this.getHashtagNode(hashtag).incrementTotalTweetNumberWithOneHashtag();
-//			this.totalNumberOfTweets++;
-//			this.totalNumberOfTweetsWithOneHashtag++;
-//		}
-//	}
-	
-	public void addEgde(String hashtagSource, String hashtagTarget) {
+	public void addEdge(String hashtagSource, String hashtagTarget) {
 		HashtagNode hashtagNodeSource;
 		HashtagNode hashtagNodeTarget;
 		HashtagEdge hashtagEdge1, hashtagEdge2;
@@ -105,17 +76,6 @@ public class HashtagGraph {
 		hashtagEdge2.incrementNumberOfTweetsWithoutIncrementingTweetNbAtNodes();
 		this.totalNumberOfTweets++;
 	}
-	
-//	public void addEgde(String hashtagSource, String hashtagTarget, Boolean incrementEdgeWeight) {
-//		this.addEgde(hashtagSource, hashtagTarget);
-//		if (incrementEdgeWeight) {
-//			HashtagEdge hashtagEdge1 = this.getHashtagEdge(hashtagSource, hashtagTarget);
-//			HashtagEdge hashtagEdge2 = this.getHashtagEdge(hashtagTarget, hashtagSource);
-//			hashtagEdge1.incrementNumberOfTweets();
-//			hashtagEdge2.incrementNumberOfTweetsWithoutIncrementingTweetNbAtNodes();
-//			this.totalNumberOfTweets++;
-//		}
-//	}
 	
 	public void incrementEdgeWeight(String hashtagSource, String hashtagTarget) {
 		HashtagEdge hashtagEdge1 = this.getHashtagEdge(hashtagSource, hashtagTarget);
@@ -300,5 +260,22 @@ public class HashtagGraph {
 				(nodeTweetFraction-minimumPossibleTweetFraction)/(1-minimumPossibleTweetFraction);
 		
 		return new BigDecimal(result).setScale(2, RoundingMode.CEILING).doubleValue();
+	}
+	
+	private HashtagNode addNodeWithoutIncrementingWeight(String hashtag) {
+		String hashTagKey = hashtag.toLowerCase();
+		HashtagNode hashtagNode = this.hashtagNodeMetaDataHashMap.get(hashTagKey);
+		
+		if (hashtagNode == null) {
+			hashtagNode = new HashtagNode(totalNodesNumber, hashtag);
+			
+			this.graph.put(hashTagKey, new ArrayList<HashtagEdge>());
+			this.hashtagNodeMetaDataHashMap.put(hashTagKey, hashtagNode);
+			this.hashtagIDarrayList.add(hashtagNode);
+			
+			this.totalNodesNumber++;
+		}
+		
+		return hashtagNode;
 	}
 }
