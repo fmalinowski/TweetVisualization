@@ -268,6 +268,9 @@ public class HashtagGraph {
 		
 		if (hashtagNode == null) {
 			hashtagNode = new HashtagNode(totalNodesNumber, hashtag);
+			if(hashTagKey.startsWith("@")) {
+				hashtagNode.setTypeMention();
+			}
 			
 			this.graph.put(hashTagKey, new ArrayList<HashtagEdge>());
 			this.hashtagNodeMetaDataHashMap.put(hashTagKey, hashtagNode);
