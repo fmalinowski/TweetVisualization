@@ -30,26 +30,28 @@ public class TwitterRest {
 		List<String> searchList = twitterSearch(searchParam);
 		hashtagGraph.addNode(searchParam);
 
-		for (int i = 0; i < 5; i++) {
-			twitterSearch(searchList.get(i));
-			hashtagGraph.addNode(searchList.get(i));
-		}
-
-		System.out.println("------------hashMap------------");
-		System.out.println(searchParam + ": " + hashMap.get(searchParam));
-		for (int i = 0; i < 5; i++) {
-			System.out.println(searchList.get(i) + ": "
-					+ hashMap.get(searchList.get(i)));
-
-			List<String> values = hashMap.get(searchList.get(i));
-			// For loop goes here to add edges
-			for (int j = 0; j < values.size(); j++) {
-				hashtagGraph.addEdge(searchList.get(i), values.get(j));
+		if(searchList.size() > 0) {
+			for (int i = 0; i < 7; i++) {
+				twitterSearch(searchList.get(i));
+				hashtagGraph.addNode(searchList.get(i));
 			}
-		}
-		List<String> value = hashMap.get(searchParam);
-		for (int j = 0; j < value.size(); j++) {
-			hashtagGraph.addEdge(searchParam, value.get(j));
+	
+			System.out.println("------------hashMap------------");
+			System.out.println(searchParam + ": " + hashMap.get(searchParam));
+			for (int i = 0; i < 7; i++) {
+				System.out.println(searchList.get(i) + ": "
+						+ hashMap.get(searchList.get(i)));
+	
+				List<String> values = hashMap.get(searchList.get(i));
+				// For loop goes here to add edges
+				for (int j = 0; j < values.size(); j++) {
+					hashtagGraph.addEdge(searchList.get(i), values.get(j));
+				}
+			}
+			List<String> value = hashMap.get(searchParam);
+			for (int j = 0; j < value.size(); j++) {
+				hashtagGraph.addEdge(searchParam, value.get(j));
+			}
 		}
 
 		return hashtagGraph;
@@ -101,13 +103,13 @@ public class TwitterRest {
 										.getHashtagEntities()[i].getText();
 								// System.out
 								// .println(index + ": #" + printHashTag);
-								valuesList.add(printHashTag);
+								valuesList.add("#"+printHashTag);
 								index++;
 							}
 						}
 						for (int i = 0; i < tweet.getUserMentionEntities().length; i++) {
-							// String printMention = tweet
-							// .getUserMentionEntities()[i].getText();
+							String printMention = tweet.getUserMentionEntities()[i].getText();
+							valuesList.add("@"+printMention);
 							// System.out.println(index + ": @" + printMention);
 							index++;
 						}

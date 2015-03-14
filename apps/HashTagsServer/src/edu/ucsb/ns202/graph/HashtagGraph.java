@@ -250,8 +250,8 @@ public class HashtagGraph {
 		
 		// minimum radius for D3: 1
 		// maximum radius for D3: 15
-		minD3Radius = 1.0;
-		maxD3Radius = 15.0;
+		minD3Radius = 3.0;
+		maxD3Radius = 13.0;
 		minimumPossibleTweetFraction = 1.0 / this.totalNumberOfTweets;
 		
 		nodeTweetFraction = (double)hashtagNode.getTotalTweetNumber()/this.totalNumberOfTweets; 
