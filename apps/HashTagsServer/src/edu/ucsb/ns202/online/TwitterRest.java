@@ -44,12 +44,12 @@ public class TwitterRest {
 			List<String> values = hashMap.get(searchList.get(i));
 			// For loop goes here to add edges
 			for (int j = 0; j < values.size(); j++) {
-				hashtagGraph.addEgde(searchList.get(i), values.get(j));
+				hashtagGraph.addEdge(searchList.get(i), values.get(j));
 			}
 		}
 		List<String> value = hashMap.get(searchParam);
 		for (int j = 0; j < value.size(); j++) {
-			hashtagGraph.addEgde(searchParam, value.get(j));
+			hashtagGraph.addEdge(searchParam, value.get(j));
 		}
 
 		return hashtagGraph;

@@ -75,7 +75,7 @@ public class HashtagQueryProcessor {
 						hashtagGraph.incrementEdgeWeight(hashtagSource, hashtagTarget);
 					}
 					else {
-						hashtagGraph.addEgde(hashtagSource, hashtagTarget);
+						hashtagGraph.addEdge(hashtagSource, hashtagTarget);
 					}
 //					System.out.println("EDGE: S:" + hashtagSource + "|T:" + hashtagTarget);
 				}
