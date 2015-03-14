@@ -36,10 +36,19 @@ public class MySQLAccessor {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			this.connect = DriverManager.getConnection(connectionString, this.username, this.password);
-			
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public Boolean isConnected() {
+		try {
+			return this.connect.isClosed();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return false;
 	}
 	
 	public void selectDBTable(String dbTable) {
@@ -61,8 +70,14 @@ public class MySQLAccessor {
 	}
 	
 	public Boolean hasNext() {
+		Boolean hasNext;
 		try {
-			return this.resultSet.next();
+			hasNext = this.resultSet.next();
+			if (!hasNext) {
+				this.resultSet.close();
+				this.statement.close();
+			}
+			return hasNext;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -85,8 +100,6 @@ public class MySQLAccessor {
 	
 	public void close() {
 		try {
-			this.resultSet.close();
-			this.statement.close();
 			this.connect.close();
 		} catch (SQLException e) {
 			e.printStackTrace();

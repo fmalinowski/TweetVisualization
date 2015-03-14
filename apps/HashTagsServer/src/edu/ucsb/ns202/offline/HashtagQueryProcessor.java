@@ -35,6 +35,37 @@ public class HashtagQueryProcessor {
 		while (this.mySqlAccessor.hasNext()) {
 			hashtagsArray = this.mySqlAccessor.getHashtags();
 			
+			
+			
+//			if (hashtagGraph.getCountOfNodes() > 80) {
+//				break;
+//			}
+			
+			if (hashtagsArray != null) {
+				this.addEdges(hashtagsArray, hashtagGraph);
+			}
+		}
+		
+		System.out.println("DONE");
+			
+		this.mySqlAccessor.close();
+		
+		return hashtagGraph.getNodesAndEdgesAsJSON();
+	}
+	
+	public JSONObject queryForHashtag(String hashtag) {
+		String[] hashtagsArray;
+		HashtagGraph hashtagGraph = new HashtagGraph();
+		
+		this.mySqlAccessor.selectDBTable("tweet_superbowl");
+		this.mySqlAccessor.connect();
+		this.mySqlAccessor.queryRelatedHashtags(hashtag);
+		
+		while (this.mySqlAccessor.hasNext()) {
+			hashtagsArray = this.mySqlAccessor.getHashtags();
+			
+			
+			
 			if (hashtagGraph.getCountOfNodes() > 80) {
 				break;
 			}
@@ -51,6 +82,8 @@ public class HashtagQueryProcessor {
 		return hashtagGraph.getNodesAndEdgesAsJSON();
 	}
 	
+	
+	
 	public void addEdges(String[] hashtagsArrayList, HashtagGraph hashtagGraph) {
 		String hashtagSource, hashtagTarget;
 		
@@ -63,11 +96,11 @@ public class HashtagQueryProcessor {
 			}
 		}
 		else {
-			System.out.println("-----");
+//			System.out.println("-----");
 			for (int i = 0; i < hashtagsArrayList.length; i++) {
 				hashtagSource = hashtagsArrayList[i];
 				
-				System.out.println(hashtagSource);
+//				System.out.println(hashtagSource);
 				
 				for (int j = i+1; j < hashtagsArrayList.length; j++) {
 					hashtagTarget = hashtagsArrayList[j];
