@@ -71,12 +71,8 @@ function createNodes(JSONdata, graphFrame, forceGraph) {
 
 	// Append the circles
 	nodesGroup.append("circle")
-		.attr("class", function(d) { 
-			if(d.hashtagOrMention == 1) return "node--mention";
-			else return "node";
-		})
-		// mySelection.classed( name, func )
-		.attr("class", function(d) { if(d.hashtagOrMention == 1) {return 'node--mention:';} else {return 'node';}});
+		.classed("node", true)
+		// .attr("class", function(d) { if(d.hashtagOrMention == 1) {return 'node--mention:';} else {return 'node';}});
 		.attr("r", function(d) { return d.radius; }) // We could make a function to get the radius bigger: attr(r, function(d) { return d.value; })
 		.on("mouseover", mouseoverNode)
 		.on("mouseout", mouseoutNode)
