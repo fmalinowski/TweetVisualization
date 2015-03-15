@@ -27,6 +27,7 @@ public class HashtagGraphBuilder {
 			hashtagsArray = this.mySQLAccessor.getHashtags();
 			
 			if (hashtagsArray != null) {
+				sortedHashtagGraph.incrementTotalTweetNumber();
 				this.addEdges(hashtagsArray, sortedHashtagGraph);
 			}
 		}
@@ -38,28 +39,29 @@ public class HashtagGraphBuilder {
 	}
 	
 	public void addEdges(String[] hashtagsArrayList, HashtagGraph hashtagGraph) {
-		String hashtagSource, hashtagTarget;
+		String hashtag, hashtagSource, hashtagTarget;
 		
-		if (hashtagsArrayList.length == 1) {
-			if (hashtagGraph.hasNode(hashtagsArrayList[0])) {
-				hashtagGraph.incrementNodeWeight(hashtagsArrayList[0]);
+		for (int i = 0; i < hashtagsArrayList.length; i++) {
+			hashtag = hashtagsArrayList[i];
+			
+			if (hashtagGraph.hasNode(hashtag)) {
+				hashtagGraph.incrementNodeWeight(hashtag);
 			}
 			else {
-				hashtagGraph.addNode(hashtagsArrayList[0]);
+				hashtagGraph.addNode(hashtag);
 			}
 		}
-		else {
-			for (int i = 0; i < hashtagsArrayList.length; i++) {
-				hashtagSource = hashtagsArrayList[i];
+		
+		for (int i = 0; i < hashtagsArrayList.length; i++) {
+			hashtagSource = hashtagsArrayList[i];
 				
-				for (int j = i+1; j < hashtagsArrayList.length; j++) {
-					hashtagTarget = hashtagsArrayList[j];
-					if (hashtagGraph.hasEdge(hashtagSource, hashtagTarget)) {
-						hashtagGraph.incrementEdgeWeight(hashtagSource, hashtagTarget);
-					}
-					else {
-						hashtagGraph.addEdge(hashtagSource, hashtagTarget);
-					}
+			for (int j = i+1; j < hashtagsArrayList.length; j++) {
+				hashtagTarget = hashtagsArrayList[j];
+				if (hashtagGraph.hasEdge(hashtagSource, hashtagTarget)) {
+					hashtagGraph.incrementEdgeWeight(hashtagSource, hashtagTarget);
+				}
+				else {
+					hashtagGraph.addEdge(hashtagSource, hashtagTarget);
 				}
 			}
 		}

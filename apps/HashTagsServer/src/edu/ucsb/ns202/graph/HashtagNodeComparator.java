@@ -6,7 +6,7 @@ public class HashtagNodeComparator implements Comparator<HashtagNode> {
 
 	@Override
 	public int compare(HashtagNode hashtagNode1, HashtagNode hashtagNode2) {
-		return hashtagNode2.getTotalTweetNumber() - hashtagNode1.getTotalTweetNumber();
+		return hashtagNode2.getNumberOfTweetsInvolved() - hashtagNode1.getNumberOfTweetsInvolved();
 	}
 
 }

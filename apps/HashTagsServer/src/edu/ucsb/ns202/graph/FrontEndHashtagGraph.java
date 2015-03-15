@@ -14,10 +14,18 @@ public class FrontEndHashtagGraph {
 	private HashMap<String, HashtagNode> hashtagNodeMetaDataHashMap = new HashMap<String, HashtagNode>();
 	private ArrayList<HashtagNode> hashtagIDarrayList = new ArrayList<HashtagNode>();
 	
-	private int totalNodesNumber = 0;
+//	protected int totalNumberOfTweets = 0;
+	protected int totalOriginalNumberOfTweets = 0;
 	
-	private int totalNumberOfTweets = 0;
-	private int totalNumberOfTweetsWithOneHashtag = 0;
+	protected int totalNodesNumber = 0;
+	protected int totalOriginalNodesNumber = 0;
+	protected int totalNodeWeight = 0;
+	protected int totalOriginalNodeWeight = 0;
+	
+	protected int totalEdgesNumber = 0;
+	protected int totalOriginalEdgesNumber = 0;
+	protected int totalEdgeWeight = 0;
+	protected int totalOriginalEdgeWeight = 0;
 	
 	public HashtagNode addNodeByCloning(HashtagNode hashtagNode) {
 		HashtagNode newHashtagNode;
@@ -35,10 +43,8 @@ public class FrontEndHashtagGraph {
 		this.hashtagNodeMetaDataHashMap.put(hashtagKey, newHashtagNode);
 		this.hashtagIDarrayList.add(newHashtagNode);
 		
-		this.totalNumberOfTweets += newHashtagNode.getTotalTweetNumber();
-		this.totalNumberOfTweetsWithOneHashtag += newHashtagNode.getTotalTweetNumberWithOneHashtag();
-		
 		this.totalNodesNumber++;
+		this.totalNodeWeight += newHashtagNode.getNumberOfTweetsInvolved();
 		
 		return newHashtagNode;
 	}
@@ -74,6 +80,9 @@ public class FrontEndHashtagGraph {
 		clonedHashtagEdge2.setSource(hashtagNodeTarget);
 		clonedHashtagEdge2.setTarget(hashtagNodeSource);
 		this.graph.get(hashtagTargetKey).add(clonedHashtagEdge2);
+		
+		this.totalEdgesNumber++;
+		this.totalEdgeWeight += clonedHashtagEdge1.getNumberOfTweetsInvolved();
 	}
 	
 	public HashtagNode getNode(String hashtag) {
@@ -97,6 +106,46 @@ public class FrontEndHashtagGraph {
 		return null;
 	}
 	
+	public void setOriginalTotalNumberOfTweets(int totalOriginalNumberOfTweets) {
+		this.totalOriginalNumberOfTweets = totalOriginalNumberOfTweets;
+	}
+	
+	public int getOriginalTotalNumberOfTweets() {
+		return this.totalOriginalNumberOfTweets;
+	}
+	
+	public void setOriginalTotalNodesNumber(int totalOriginalNodesNumber) {
+		this.totalOriginalNodesNumber = totalOriginalNodesNumber;
+	}
+	
+	public int getOriginalTotalNodesNumber() {
+		return this.totalOriginalNodesNumber;
+	}
+	
+	public void setOriginalTotalEdgesNumber(int totalOriginalEdgesNumber) {
+		this.totalOriginalEdgesNumber = totalOriginalEdgesNumber;
+	}
+	
+	public int getOriginalTotalEdgesNumber() {
+		return this.totalOriginalEdgesNumber;
+	}
+	
+	public void setOriginalTotalNodeWeight(int totalOriginalNodeWeight) {
+		this.totalOriginalNodeWeight = totalOriginalNodeWeight;
+	}
+	
+	public int getOriginalTotalNodeWeight() {
+		return this.totalOriginalNodeWeight;
+	}
+	
+	public void setOriginalTotalEdgeWeight(int totalOriginalEdgeWeight) {
+		this.totalOriginalEdgeWeight = totalOriginalEdgeWeight;
+	}
+	
+	public int getOriginalTotalEdgeWeight() {
+		return this.totalOriginalEdgeWeight;
+	}
+	
 	public JSONObject getNodesAndEdgesAsJSON() {
 		JSONObject result = new JSONObject();
 		try {
@@ -117,7 +166,7 @@ public class FrontEndHashtagGraph {
 		for (HashtagNode hashtagNode : this.hashtagIDarrayList) {	
 			nodeJSON = new JSONObject();
 			try {
-//				System.out.println("Node name:" + hashtagNode.getNameWithCase() + " | id:" + hashtagNode.getNodeID() + " | NbTweets:" + hashtagNode.getTotalTweetNumber() + " | totalTweets:" + this.totalNumberOfTweets  + " | radius:" + computeD3NodeRadius(hashtagNode));
+//				System.out.println("Node name:" + hashtagNode.getNameWithCase() + " | id:" + hashtagNode.getNodeID() + " | NbTweets:" + hashtagNode.getTotalTweetNumber() + " | totalOriginalTweets:" + this.totalOriginalNumberOfTweets  + " | radius:" + computeD3NodeRadius(hashtagNode));
 				nodeJSON.put("name", hashtagNode.getNameWithCase());
 				nodeJSON.put("id", hashtagNode.getNodeID());
 				nodeJSON.put("radius", computeD3NodeRadius(hashtagNode));
@@ -147,7 +196,7 @@ public class FrontEndHashtagGraph {
 				if (hashtagNodeSource.getNodeID() < hashtagNodeTarget.getNodeID()) {
 					edgeJSON = new JSONObject();
 					try {
-						System.out.println("edge source:" + hashtagNodeSource.getNameWithCase() + " | target:" + hashtagNodeTarget.getNameWithCase() + " | nbTweets:" + hashtagEdge.getNumberOfTweets() + " | totalTweets:" + this.totalNumberOfTweets + " | weight:" + computeD3EdgeWeight(hashtagEdge));
+						System.out.println("edge source:" + hashtagNodeSource.getNameWithCase() + " | target:" + hashtagNodeTarget.getNameWithCase() + " | nbTweets:" + hashtagEdge.getNumberOfTweetsInvolved() + " | totalOriginalTweets:" + this.totalOriginalNumberOfTweets + " | weight:" + computeD3EdgeWeight(hashtagEdge));
 						edgeJSON.put("source", hashtagNodeSource.getNodeID());
 						edgeJSON.put("target", hashtagNodeTarget.getNodeID());
 						edgeJSON.put("weight", computeD3EdgeWeight(hashtagEdge));
@@ -169,9 +218,9 @@ public class FrontEndHashtagGraph {
 		
 		minD3StrokeWidth = 0.8;
 		maxD3StrokeWidth = 7.0;
-		minimumPossibleTweetFraction = 1.0 / this.totalNumberOfTweets;
+		minimumPossibleTweetFraction = 1.0 / this.totalOriginalNumberOfTweets;
 		
-		edgeTweetFraction = (double)hashtagEdge.getNumberOfTweets()/this.totalNumberOfTweets;
+		edgeTweetFraction = (double)hashtagEdge.getNumberOfTweetsInvolved()/this.totalOriginalNumberOfTweets;
 				
 		result = minD3StrokeWidth + (maxD3StrokeWidth - minD3StrokeWidth) * 
 				(edgeTweetFraction-minimumPossibleTweetFraction)/(1-minimumPossibleTweetFraction);
@@ -187,9 +236,9 @@ public class FrontEndHashtagGraph {
 		// maximum radius for D3: 15
 		minD3Radius = 3.0;
 		maxD3Radius = 13.0;
-		minimumPossibleTweetFraction = 1.0 / this.totalNumberOfTweets;
+		minimumPossibleTweetFraction = 1.0 / this.totalOriginalNumberOfTweets;
 		
-		nodeTweetFraction = (double)hashtagNode.getTotalTweetNumber()/this.totalNumberOfTweets; 
+		nodeTweetFraction = (double)hashtagNode.getNumberOfTweetsInvolved()/this.totalOriginalNumberOfTweets; 
 		
 		result = minD3Radius + (maxD3Radius - minD3Radius) * 
 				(nodeTweetFraction-minimumPossibleTweetFraction)/(1-minimumPossibleTweetFraction);

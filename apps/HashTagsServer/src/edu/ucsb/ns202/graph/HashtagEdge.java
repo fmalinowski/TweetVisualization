@@ -36,17 +36,11 @@ public class HashtagEdge {
 		this.target = hashtagNodeTarget;
 	}
 	
-	public int getNumberOfTweets() {
+	public int getNumberOfTweetsInvolved() {
 		return this.totalTweets;
 	}
 	
-	protected void incrementNumberOfTweets() {
-		this.source.incrementTotalTweetNumber();
-		this.target.incrementTotalTweetNumber();
-		this.totalTweets++;
-	}
-	
-	protected void incrementNumberOfTweetsWithoutIncrementingTweetNbAtNodes() {
+	protected void incrementNumberOfTweetsInvolved() {
 		this.totalTweets++;
 	}
 }

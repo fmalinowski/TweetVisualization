@@ -10,6 +10,14 @@ public class SortedHashtagGraphTest {
 	public void testSortEdgesByNodePopularity() {
 		SortedHashtagGraph sortedHashtagGraph = new SortedHashtagGraph();
 		
+		sortedHashtagGraph.addNode("node1");
+		sortedHashtagGraph.addNode("node2");
+		sortedHashtagGraph.addNode("node3");
+		sortedHashtagGraph.addNode("node4");
+		sortedHashtagGraph.addNode("node5");
+		sortedHashtagGraph.addNode("node6");
+		sortedHashtagGraph.addNode("node7");
+		
 		sortedHashtagGraph.addEdge("node1", "node2");
 		sortedHashtagGraph.addEdge("node1", "node3");
 		sortedHashtagGraph.addEdge("node1", "node4");
@@ -58,6 +66,57 @@ public class SortedHashtagGraphTest {
 		sortedHashtagGraph.incrementEdgeWeight("node6", "node7");
 		sortedHashtagGraph.incrementEdgeWeight("node6", "node7");
 		
+		//Weight of node1: 9
+		sortedHashtagGraph.incrementNodeWeight("node1");
+		sortedHashtagGraph.incrementNodeWeight("node1");
+		sortedHashtagGraph.incrementNodeWeight("node1");
+		sortedHashtagGraph.incrementNodeWeight("node1");
+		sortedHashtagGraph.incrementNodeWeight("node1");
+		sortedHashtagGraph.incrementNodeWeight("node1");
+		sortedHashtagGraph.incrementNodeWeight("node1");
+		sortedHashtagGraph.incrementNodeWeight("node1");
+		
+		//Weight of node2: 8
+		sortedHashtagGraph.incrementNodeWeight("node2");
+		sortedHashtagGraph.incrementNodeWeight("node2");
+		sortedHashtagGraph.incrementNodeWeight("node2");
+		sortedHashtagGraph.incrementNodeWeight("node2");
+		sortedHashtagGraph.incrementNodeWeight("node2");
+		sortedHashtagGraph.incrementNodeWeight("node2");
+		sortedHashtagGraph.incrementNodeWeight("node2");
+		
+		//Weight of node3: 4
+		sortedHashtagGraph.incrementNodeWeight("node3");
+		sortedHashtagGraph.incrementNodeWeight("node3");
+		sortedHashtagGraph.incrementNodeWeight("node3");
+		
+		//Weight of node4: 7
+		sortedHashtagGraph.incrementNodeWeight("node4");
+		sortedHashtagGraph.incrementNodeWeight("node4");
+		sortedHashtagGraph.incrementNodeWeight("node4");
+		sortedHashtagGraph.incrementNodeWeight("node4");
+		sortedHashtagGraph.incrementNodeWeight("node4");
+		sortedHashtagGraph.incrementNodeWeight("node4");
+		
+		//Weight of node5: 6
+		sortedHashtagGraph.incrementNodeWeight("node5");
+		sortedHashtagGraph.incrementNodeWeight("node5");
+		sortedHashtagGraph.incrementNodeWeight("node5");
+		sortedHashtagGraph.incrementNodeWeight("node5");
+		sortedHashtagGraph.incrementNodeWeight("node5");
+		
+		//Weight of node6: 5
+		sortedHashtagGraph.incrementNodeWeight("node6");
+		sortedHashtagGraph.incrementNodeWeight("node6");
+		sortedHashtagGraph.incrementNodeWeight("node6");
+		sortedHashtagGraph.incrementNodeWeight("node6");
+		
+		//Weight of node7: 5
+		sortedHashtagGraph.incrementNodeWeight("node7");
+		sortedHashtagGraph.incrementNodeWeight("node7");
+		sortedHashtagGraph.incrementNodeWeight("node7");
+		sortedHashtagGraph.incrementNodeWeight("node7");
+		
 		/*
 		 * edge node1-node2: 2
 		 * edge node1-node3: 3
@@ -70,13 +129,13 @@ public class SortedHashtagGraphTest {
 		 * 
 		 * edge node6-node7: 6
 		 * 
-		 * node1: 13
-		 * node2: 10
-		 * node3: 5
-		 * node4: 9
-		 * node5: 7
-		 * node6: 6
-		 * node7: 6
+		 * node1: 9
+		 * node2: 8
+		 * node3: 4
+		 * node4: 7
+		 * node5: 6
+		 * node6: 5
+		 * node7: 5
 		 */
 		
 		HashtagEdge hashtagEdge_1_2 = sortedHashtagGraph.getHashtagEdge("node1", "node2");
@@ -91,8 +150,6 @@ public class SortedHashtagGraphTest {
 		
 		HashtagEdge hashtagEdge_3_1 = sortedHashtagGraph.getHashtagEdge("node3", "node1");
 		HashtagEdge hashtagEdge_3_2 = sortedHashtagGraph.getHashtagEdge("node3", "node2");
-		
-//		HashtagEdge hashtagEdge_6_7 = sortedHashtagGraph.getHashtagEdge("node2", "node3");
 		
 		HashtagNode hashtagNode1, hashtagNode2, hashtagNode3, hashtagNode4, hashtagNode5, hashtagNode6, hashtagNode7;
 		

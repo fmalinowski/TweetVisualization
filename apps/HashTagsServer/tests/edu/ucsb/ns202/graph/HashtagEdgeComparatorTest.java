@@ -21,20 +21,20 @@ public class HashtagEdgeComparatorTest {
 		hashtagNode3 = new HashtagNode(3, "node3");
 		hashtagNode4 = new HashtagNode(4, "node4");
 		
-		hashtagNode1.incrementTotalTweetNumber();
-		hashtagNode1.incrementTotalTweetNumber();
-		hashtagNode1.incrementTotalTweetNumber();
+		hashtagNode1.incrementNumberOfTweetsInvolved();
+		hashtagNode1.incrementNumberOfTweetsInvolved();
+		hashtagNode1.incrementNumberOfTweetsInvolved();
 		
-		hashtagNode2.incrementTotalTweetNumber();
+		hashtagNode2.incrementNumberOfTweetsInvolved();
 		
-		hashtagNode3.incrementTotalTweetNumber();
-		hashtagNode3.incrementTotalTweetNumber();
-		hashtagNode3.incrementTotalTweetNumber();
-		hashtagNode3.incrementTotalTweetNumber();
+		hashtagNode3.incrementNumberOfTweetsInvolved();
+		hashtagNode3.incrementNumberOfTweetsInvolved();
+		hashtagNode3.incrementNumberOfTweetsInvolved();
+		hashtagNode3.incrementNumberOfTweetsInvolved();
 		
-		hashtagNode4.incrementTotalTweetNumber();
-		hashtagNode4.incrementTotalTweetNumber();
-		hashtagNode4.incrementTotalTweetNumber();
+		hashtagNode4.incrementNumberOfTweetsInvolved();
+		hashtagNode4.incrementNumberOfTweetsInvolved();
+		hashtagNode4.incrementNumberOfTweetsInvolved();
 		
 		hashtagEdge1 = new HashtagEdge(hashtagNode1, hashtagNode2);
 		hashtagEdge2 = new HashtagEdge(hashtagNode3, hashtagNode1);

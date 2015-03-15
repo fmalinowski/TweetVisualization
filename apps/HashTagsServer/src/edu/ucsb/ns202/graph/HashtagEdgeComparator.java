@@ -28,7 +28,7 @@ public class HashtagEdgeComparator implements Comparator<HashtagEdge> {
 			edge2TargetNode = hashtagEdge2.getSource();
 		}
 		
-		return edge2TargetNode.getTotalTweetNumber() - edge1TargetNode.getTotalTweetNumber();
+		return edge2TargetNode.getNumberOfTweetsInvolved() - edge1TargetNode.getNumberOfTweetsInvolved();
 	}
 
 }
