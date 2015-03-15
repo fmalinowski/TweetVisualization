@@ -13,8 +13,8 @@
 }
 
 .node--mention {
-	fill: #32f432;
-	stroke: #d03b29;
+	fill: #FFD130;
+	stroke: #FFE58C;
 	stroke-width: 1.5px;
 }
 
@@ -24,8 +24,8 @@
 }
 
 .node--highlight-edge-target {
-	stroke: #ff4640;
-	fill: #ffa640;
+	stroke: #ffa640;
+	fill: #ff4640;
 }
 
 .link {
