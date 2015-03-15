@@ -14,12 +14,25 @@ public class HashtagNode {
 		this.nameWithCase = nameWithCase;
 	}
 	
+	public HashtagNode clone() {
+		HashtagNode clonedHashtagNode = new HashtagNode(this.nodeID, nameWithCase);
+		clonedHashtagNode.totalTweetNumberWithOneHashtag = this.totalTweetNumberWithOneHashtag;
+		clonedHashtagNode.totalTweetNumber = this.totalTweetNumber;
+		clonedHashtagNode.hashtagOrMention = this.hashtagOrMention;
+		
+		return clonedHashtagNode;
+	}
+	
 	public int getNodeID() {
 		return this.nodeID;
 	}
 	
 	public void setNodeID(int nodeID) {
 		this.nodeID = nodeID;
+	}
+	
+	public void setName(String nameWithCase) {
+		this.nameWithCase = nameWithCase;
 	}
 	
 	public String getNameWithCase() {
@@ -32,6 +45,10 @@ public class HashtagNode {
 	
 	public void setTypeMention() {
 		this.hashtagOrMention = Type.MENTION;
+	}
+	
+	public void setTypeHashtag() {
+		this.hashtagOrMention = Type.HASHTAG;
 	}
 	
 	public int getType() {

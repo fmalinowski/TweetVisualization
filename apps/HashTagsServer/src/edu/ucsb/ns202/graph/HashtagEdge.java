@@ -12,12 +12,28 @@ public class HashtagEdge {
 		this.target = target;
 	}
 	
+	// This doesn't clone the source and the target!
+	public HashtagEdge clone() {
+		HashtagEdge clonedHashtagEdge = new HashtagEdge(this.source, this.target);
+		clonedHashtagEdge.totalTweets = this.totalTweets;
+		
+		return clonedHashtagEdge;
+	}
+	
 	public HashtagNode getSource() {
 		return this.source;
 	}
 	
 	public HashtagNode getTarget() {
 		return this.target;
+	}
+	
+	public void setSource(HashtagNode hashtagNodeSource) {
+		this.source = hashtagNodeSource;
+	}
+	
+	public void setTarget(HashtagNode hashtagNodeTarget) {
+		this.target = hashtagNodeTarget;
 	}
 	
 	public int getNumberOfTweets() {

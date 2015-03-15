@@ -92,5 +92,30 @@ public class HashtagEdgeTest {
 		assertEquals(1, node2.getTotalTweetNumber());
 		assertEquals(0, node2.getTotalTweetNumberWithOneHashtag());
 	}
+	
+	@Test
+	public void testClone() {
+		HashtagEdge hashtagEdge, clonedHashtagEdge;
+		HashtagNode hashtagNodeSource, hashtagNodeTarget;
+		
+		hashtagNodeSource = new HashtagNode(1, "NoDe1");
+		hashtagNodeTarget = new HashtagNode(2, "NoDe2");
+		
+		hashtagEdge = new HashtagEdge(hashtagNodeSource, hashtagNodeTarget);
+		hashtagEdge.incrementNumberOfTweets();
+		
+		clonedHashtagEdge = hashtagEdge.clone();
+		
+		assertEquals(hashtagEdge.getNumberOfTweets(), clonedHashtagEdge.getNumberOfTweets());
+		assertEquals(hashtagEdge.getSource(), clonedHashtagEdge.getSource());
+		assertEquals(hashtagEdge.getTarget(), clonedHashtagEdge.getTarget());
+		
+		hashtagEdge.incrementNumberOfTweets();
+		hashtagEdge.getSource().setName("newNode1");
+		hashtagEdge.getTarget().setName("newNode2");
+		assertNotEquals(hashtagEdge.getNumberOfTweets(), clonedHashtagEdge.getNumberOfTweets());
+		assertEquals(hashtagEdge.getSource().getNameWithCase(), clonedHashtagEdge.getSource().getNameWithCase());
+		assertEquals(hashtagEdge.getTarget().getNameWithCase(), clonedHashtagEdge.getTarget().getNameWithCase());
+	}
 
 }

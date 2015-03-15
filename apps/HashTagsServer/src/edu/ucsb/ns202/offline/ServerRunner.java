@@ -54,7 +54,7 @@ public class ServerRunner implements IServerRunner{
 	    	// This serves the requests like ?param1=value1&param2=value2 ... 
 	    	Map<String, String> params = ParamUtilities.queryToMap(query);
 	    	
-	    	hashtagQueryProcessor = new HashtagQueryProcessor(params.get("hashtag"));
+	    	hashtagQueryProcessor = new HashtagQueryProcessor(hashtagGraph, params.get("hashtag"));
 	    	JSONObject jsonResponse;
 			
 	    	jsonResponse = hashtagQueryProcessor.query();

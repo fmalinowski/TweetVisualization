@@ -38,5 +38,34 @@ public class HashtagNodeTest {
 		hashtagNode.incrementTotalTweetNumber();
 		assertEquals(3, hashtagNode.getTotalTweetNumber());
 	}
+	
+	@Test
+	public void testClone() {
+		HashtagNode hashtagNode, clonedHashtagNode;
+		
+		hashtagNode = new HashtagNode(2, "myNode");
+		hashtagNode.setTypeMention();
+		hashtagNode.incrementTotalTweetNumber();
+		hashtagNode.incrementTotalTweetNumberWithOneHashtag();
+		hashtagNode.incrementTotalTweetNumberWithOneHashtag();
+		
+		clonedHashtagNode = hashtagNode.clone();
+		assertEquals(hashtagNode.getNodeID(), clonedHashtagNode.getNodeID());
+		assertEquals(hashtagNode.getNameWithCase(), clonedHashtagNode.getNameWithCase());
+		assertEquals(hashtagNode.getTotalTweetNumber(), clonedHashtagNode.getTotalTweetNumber());
+		assertEquals(hashtagNode.getTotalTweetNumberWithOneHashtag(), clonedHashtagNode.getTotalTweetNumberWithOneHashtag());
+		assertEquals(hashtagNode.getType(), clonedHashtagNode.getType());
+		
+		hashtagNode.setNodeID(3);
+		hashtagNode.setName("NewNodeName");
+		hashtagNode.setTypeHashtag();
+		hashtagNode.incrementTotalTweetNumber();
+		hashtagNode.incrementTotalTweetNumberWithOneHashtag();
+		assertNotEquals(hashtagNode.getNodeID(), clonedHashtagNode.getNodeID());
+		assertNotEquals(hashtagNode.getNameWithCase(), clonedHashtagNode.getNameWithCase());
+		assertNotEquals(hashtagNode.getTotalTweetNumber(), clonedHashtagNode.getTotalTweetNumber());
+		assertNotEquals(hashtagNode.getTotalTweetNumberWithOneHashtag(), clonedHashtagNode.getTotalTweetNumberWithOneHashtag());
+		assertNotEquals(hashtagNode.getType(), clonedHashtagNode.getType());
+	}
 
 }
