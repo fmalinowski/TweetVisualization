@@ -18,6 +18,10 @@ public class HashtagNode {
 		return this.nodeID;
 	}
 	
+	public void setNodeID(int nodeID) {
+		this.nodeID = nodeID;
+	}
+	
 	public String getNameWithCase() {
 		return this.nameWithCase;
 	}

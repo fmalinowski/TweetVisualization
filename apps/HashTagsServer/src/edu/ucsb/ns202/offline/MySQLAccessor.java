@@ -60,6 +60,19 @@ public class MySQLAccessor {
 		}
 	}
 	
+	public void retrieveAllHashtags() {
+		String sqlQuery;
+		
+		sqlQuery = "SELECT " + this.hashtagColumn + " FROM " + this.database+ "." + this.dbTable + ";";
+		try {
+			this.statement = connect.createStatement();
+			
+			this.resultSet = this.statement.executeQuery(sqlQuery);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public Boolean hasNext() {
 		try {
 			return this.resultSet.next();

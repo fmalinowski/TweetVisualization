@@ -12,14 +12,14 @@ import org.json.JSONObject;
 
 public class HashtagGraph {
 	
-	private HashMap<String, ArrayList<HashtagEdge>> graph = new HashMap<String, ArrayList<HashtagEdge>>();
-	private HashMap<String, HashtagNode> hashtagNodeMetaDataHashMap = new HashMap<String, HashtagNode>();
-	private ArrayList<HashtagNode> hashtagIDarrayList = new ArrayList<HashtagNode>();
+	protected HashMap<String, ArrayList<HashtagEdge>> graph = new HashMap<String, ArrayList<HashtagEdge>>();
+	protected HashMap<String, HashtagNode> hashtagNodeMetaDataHashMap = new HashMap<String, HashtagNode>();
+	protected ArrayList<HashtagNode> hashtagIDarrayList = new ArrayList<HashtagNode>();
 	
-	private int totalNumberOfTweets = 0;
-	private int totalNumberOfTweetsWithOneHashtag = 0;
+	protected int totalNumberOfTweets = 0;
+	protected int totalNumberOfTweetsWithOneHashtag = 0;
 	
-	private int totalNodesNumber = 0;
+	protected int totalNodesNumber = 0;
 
 	public void addNode(String hashtag) {
 		HashtagNode hashtagNode = this.addNodeWithoutIncrementingWeight(hashtag);
@@ -147,6 +147,10 @@ public class HashtagGraph {
 		}
 		
 		return hashtagNodeList;
+	}
+	
+	public ArrayList<HashtagEdge> getEdges(String hashtag) {		
+		return (ArrayList<HashtagEdge>) this.graph.get(hashtag.toLowerCase()).clone();
 	}
 	
 	public ArrayList<String> getNodeStringList() {

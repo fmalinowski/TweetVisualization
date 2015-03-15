@@ -17,13 +17,24 @@ import com.sun.net.httpserver.HttpServer;
 
 import edu.ucsb.ns202.IServerRunner;
 import edu.ucsb.ns202.ParamUtilities;
+import edu.ucsb.ns202.graph.HashtagGraph;
+import edu.ucsb.ns202.graph.SortedHashtagGraph;
 
 public class ServerRunner implements IServerRunner{
 	
 	private static HashtagQueryProcessor hashtagQueryProcessor;
+	private static HashtagGraphBuilder hashtagGraphBuilder;
+	private static SortedHashtagGraph hashtagGraph;
 
 	public void run() {
 		HttpServer server;
+		ServerRunner.hashtagGraphBuilder = new HashtagGraphBuilder();
+		
+		System.out.println("Building Hashtag graph. Please Wait...");
+		ServerRunner.hashtagGraph = hashtagGraphBuilder.buildGraph();
+		System.out.println("Hashtag graph built.");
+		System.out.println("Launching web server.");
+		
 		try {
 			server = HttpServer.create(new InetSocketAddress(8000), 0);
 			server.createContext("/", new StaticContentHandler());
