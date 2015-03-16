@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 
-import edu.ucsb.ns202.graph.HashtagGraph;
+import edu.ucsb.ns202.graph.SortedHashtagGraph;
 import twitter4j.Query;
 import twitter4j.QueryResult;
 import twitter4j.RateLimitStatus;
@@ -17,44 +17,82 @@ import twitter4j.TwitterStreamFactory;
 import twitter4j.conf.ConfigurationBuilder;
 
 public class TwitterRest {
+	private static SortedHashtagGraph hashtagGraph;
 	private static ConfigurationBuilder cb;
 	private static Twitter twitter;
 	private static HashMap<String, ArrayList<String>> hashMap = new HashMap<String, ArrayList<String>>();
-	
 
-	public static HashtagGraph handleSearch(String searchParam) {
+	public static SortedHashtagGraph handleSearch(String searchParam) {
 		hashMap.clear();
-		HashtagGraph hashtagGraph = new HashtagGraph();
-		
+		hashtagGraph = new SortedHashtagGraph();
+
 		twitterAuth();
 		List<String> searchList = twitterSearch(searchParam);
-		hashtagGraph.addNode(searchParam);
+		if (hashtagGraph.hasNode(searchParam)) {
+			hashtagGraph.incrementNodeWeight(searchParam);
+		}
+		else {
+			hashtagGraph.addNode(searchParam);
+		}
 
-		if(searchList.size() > 0) {
+		if (searchList.size() > 0) {
 			for (int i = 0; i < 7; i++) {
 				twitterSearch(searchList.get(i));
-				hashtagGraph.addNode(searchList.get(i));
+				if (hashtagGraph.hasNode(searchList.get(i))) {
+					hashtagGraph.incrementNodeWeight(searchList.get(i));
+				}
+				else {
+					hashtagGraph.addNode(searchList.get(i));
+				}
 			}
-	
+
 			System.out.println("------------hashMap------------");
 			System.out.println(searchParam + ": " + hashMap.get(searchParam));
-			if(searchList.size() > 0) {
+			if (searchList.size() > 0) {
 				for (int i = 0; i < 7; i++) {
 					System.out.println(searchList.get(i) + ": "
 							+ hashMap.get(searchList.get(i)));
-		
 					List<String> values = hashMap.get(searchList.get(i));
 					// For loop goes here to add edges
-					if(values.size() > 0) {
-					for (int j = 0; j < values.size(); j++) {
+					if (values.size() > 0) {
+						for (int j = 0; j < values.size(); j++) {
+							if(hashtagGraph.hasNode(searchList.get(i))) {
+								hashtagGraph.incrementNodeWeight(searchList.get(i));
+							}
+							else {
+								hashtagGraph.addNode(searchList.get(i));
+							}
+							if(hashtagGraph.hasNode(values.get(j))) {
+								hashtagGraph.incrementNodeWeight(values.get(j));
+							}
+							else {
+								hashtagGraph.addNode(values.get(j));
+							}
 							hashtagGraph.addEdge(searchList.get(i), values.get(j));
 						}
 					}
 				}
 				List<String> value = hashMap.get(searchParam);
-				if(value.size() > 0) {
+				if (value.size() > 0) {
 					for (int j = 0; j < value.size(); j++) {
-						hashtagGraph.addEdge(searchParam, value.get(j));
+						if (hashtagGraph.hasEdge(searchParam, value.get(j))) {
+							hashtagGraph.incrementEdgeWeight(searchParam, value.get(j));
+						}
+						else {
+							if(hashtagGraph.hasNode(searchParam)) {
+								hashtagGraph.incrementNodeWeight(searchParam);
+							}
+							else {
+								hashtagGraph.addNode(searchParam);
+							}
+							if(hashtagGraph.hasNode(value.get(j))) {
+								hashtagGraph.incrementNodeWeight(value.get(j));
+							}
+							else {
+								hashtagGraph.addNode(value.get(j));
+							}
+							hashtagGraph.addEdge(searchParam, value.get(j));
+						}
 					}
 				}
 			}
@@ -101,6 +139,8 @@ public class TwitterRest {
 
 				for (Status tweet : tweets) {
 					if (tweet.getHashtagEntities().length > 1) {
+						// testing this 
+						hashtagGraph.incrementTotalTweetNumber();
 						// System.out.println("-----------------");
 						for (int i = 0; i < tweet.getHashtagEntities().length; i++) {
 							if (!tweet.getHashtagEntities()[i].getText()
@@ -109,13 +149,14 @@ public class TwitterRest {
 										.getHashtagEntities()[i].getText();
 								// System.out
 								// .println(index + ": #" + printHashTag);
-								valuesList.add("#"+printHashTag);
+								valuesList.add("#" + printHashTag);
 								index++;
 							}
 						}
 						for (int i = 0; i < tweet.getUserMentionEntities().length; i++) {
-							String printMention = tweet.getUserMentionEntities()[i].getText();
-							valuesList.add("@"+printMention);
+							String printMention = tweet
+									.getUserMentionEntities()[i].getText();
+							valuesList.add("@" + printMention);
 							// System.out.println(index + ": @" + printMention);
 							index++;
 						}
