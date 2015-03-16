@@ -49,6 +49,7 @@ public class ServerRunner implements IServerRunner{
 	
 	class HashTagRequestHandler implements HttpHandler {
 	    public void handle(HttpExchange t) throws IOException {
+	    	byte[] answerForClient;
 	    	String query = t.getRequestURI().getQuery();
 	    	// Will get a map with as a key the parameter and as a value the value
 	    	// This serves the requests like ?param1=value1&param2=value2 ... 
@@ -60,14 +61,16 @@ public class ServerRunner implements IServerRunner{
 	    	jsonResponse = hashtagQueryProcessor.query();
 			
 	    	String strJsonResponse = jsonResponse.toString();
+	    	answerForClient = strJsonResponse.getBytes();
 	    	
 	    	Headers h = t.getResponseHeaders();
 	    	h.add("Content-Type", "application/json");
-			t.sendResponseHeaders(200, strJsonResponse.length());
+	    	
+			t.sendResponseHeaders(200, answerForClient.length);
 	    	
 	    	OutputStream os = t.getResponseBody();
 	    	
-	    	os.write(strJsonResponse.getBytes());
+	    	os.write(answerForClient);
 			os.close();
 	    }
 	 }
