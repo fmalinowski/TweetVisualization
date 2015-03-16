@@ -204,6 +204,7 @@ public class FrontEndHashtagGraph {
 				nodeJSON.put("id", hashtagNode.getNodeID());
 				nodeJSON.put("radius", computeD3NodeRadius(hashtagNode));
 				nodeJSON.put("type", hashtagNode.getType());
+				this.addNodeInfoForJSON(nodeJSON, hashtagNode);
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -229,10 +230,11 @@ public class FrontEndHashtagGraph {
 				if (hashtagNodeSource.getNodeID() < hashtagNodeTarget.getNodeID()) {
 					edgeJSON = new JSONObject();
 					try {
-						System.out.println("edge source:" + hashtagNodeSource.getNameWithCase() + " | target:" + hashtagNodeTarget.getNameWithCase() + " | nbTweets:" + hashtagEdge.getNumberOfTweetsInvolved() + " | totalOriginalTweets:" + this.totalOriginalNumberOfTweets + " | weight:" + computeD3EdgeWeight(hashtagEdge));
+//						System.out.println("edge source:" + hashtagNodeSource.getNameWithCase() + " | target:" + hashtagNodeTarget.getNameWithCase() + " | nbTweets:" + hashtagEdge.getNumberOfTweetsInvolved() + " | totalOriginalTweets:" + this.totalOriginalNumberOfTweets + " | weight:" + computeD3EdgeWeight(hashtagEdge));
 						edgeJSON.put("source", hashtagNodeSource.getNodeID());
 						edgeJSON.put("target", hashtagNodeTarget.getNodeID());
 						edgeJSON.put("weight", computeD3EdgeWeight(hashtagEdge));
+						this.addEdgeInfoForJSON(edgeJSON, hashtagEdge);
 					} catch (JSONException e) {
 						e.printStackTrace();
 					}
@@ -308,11 +310,13 @@ public class FrontEndHashtagGraph {
 	
 	private void addEdgeInfoForJSON(JSONObject jsonObj, HashtagEdge hashtagEdge) {
 		double percentageTotalTweetNb;
+		int popularityRank;
 		
 		percentageTotalTweetNb = (double)hashtagEdge.getNumberOfTweetsInvolved()/this.totalOriginalNumberOfTweets * 100.0;
 		try {
 			jsonObj.put("nbOfTweets", hashtagEdge.getNumberOfTweetsInvolved());
 			jsonObj.put("percentageTotalTweetNb", new BigDecimal(percentageTotalTweetNb).setScale(3, RoundingMode.CEILING).doubleValue());
+//			jsonObj.put("popularityRank", hashtagEdge.getNumberOfTweetsInvolved());
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -328,7 +332,7 @@ public class FrontEndHashtagGraph {
 			jsonObj.put("totalNbOfTweets", this.totalOriginalNumberOfTweets);
 			jsonObj.put("totalNbOfNodes", this.totalOriginalNodesNumber);
 			jsonObj.put("totalNbOfEdges", this.totalOriginalEdgesNumber);
-			jsonObj.put("density", this.totalOriginalEdgesNumber);
+			jsonObj.put("density", new BigDecimal(graphDensity).setScale(3, RoundingMode.CEILING).doubleValue());
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

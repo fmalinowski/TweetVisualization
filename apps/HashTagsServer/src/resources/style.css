@@ -76,6 +76,7 @@ body {
 	position: fixed;
 	top: 0;
 	width: 100%;
+	z-index: 2;
 
 	transition: opacity 1.5s ease 0.7s;
 	-webkit-transition: opacity 1.5s ease 0.7s;
@@ -94,6 +95,7 @@ body {
 	transform: translateY(-50%);
 	-webkit-transform: translateY(-50%);
 	width: 100%;
+	z-index: 2;
 
 	transition: top 0.7s linear;
 	-webkit-transition: top 0.7s linear;
@@ -193,6 +195,7 @@ body {
 	text-align: center;
 	top: 58px;
 	width: 100%;
+	z-index: 1;
 
 	transition: opacity 1.5s ease 0.7s;
 	-webkit-transition: opacity 1.5s ease 0.7s;
@@ -214,4 +217,55 @@ body {
 
 .results__container {
 	font-size: 0.8rem;
+}
+
+.info-box {
+	background-color: white;
+	border: 1px solid #4099FF;
+	border-radius: 5px;
+	color: #2C2C2C;
+
+	position: absolute;
+	display: none;
+	bottom: 0;
+	right: 0;
+	height: 160px;
+	width: 200px;
+	text-align: center;
+	z-index: 2;
+}
+
+.info-box__title {
+	border-radius: 5px 5px 0 0;
+	margin:0;
+	padding: 10px 5px 10px 5px;
+
+	background-color: #4099FF;
+	color: white;
+	font-family: 'Roboto Condensed', sans-serif;
+	font-size: 14px;
+}
+
+.info-box__content {
+	display: flex;
+	display: -webkit-flex;
+	align-items: center;
+	-webkit-align-items: center;
+	justify-content: center;
+	-webkit-justify-content: center; 
+	height: 120px;
+}
+
+.info-box-table {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.info-box-table__key {
+	font-size: 11px;
+}
+
+.info-box-table__value {
+	font-size: 16px;
+	font-weight: bold;
 }
