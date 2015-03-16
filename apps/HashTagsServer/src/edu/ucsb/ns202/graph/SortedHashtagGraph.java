@@ -172,8 +172,8 @@ public class SortedHashtagGraph extends HashtagGraph {
 		
 		hashtagKey = hashtagNode.getNameWithoutCase();
 		percentageTotalTweetNb = (double)hashtagNode.getNumberOfTweetsInvolved()/this.totalNumberOfTweets * 100.0;
-		popularityRank = this.originalHashtagGraph.getHashtagNode(hashtagKey).getNodeID() + 1;
-		degreeOfNode = this.originalHashtagGraph.graph.get(hashtagKey).size();
+		popularityRank = this.getHashtagNode(hashtagKey).getNodeID();
+		degreeOfNode = this.graph.get(hashtagKey).size();
 		try {
 			jsonObj.put("nbOfTweets", hashtagNode.getNumberOfTweetsInvolved());
 			jsonObj.put("percentageTotalTweetNb", new BigDecimal(percentageTotalTweetNb).setScale(3, RoundingMode.CEILING).doubleValue());
@@ -213,6 +213,4 @@ public class SortedHashtagGraph extends HashtagGraph {
 			e.printStackTrace();
 		}
 	}
-	
-
 }
