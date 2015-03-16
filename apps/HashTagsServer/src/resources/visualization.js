@@ -1,8 +1,10 @@
-var svg, graphFrame;
+var svg, graphFrame, graphData;
 
 function displayGraph(JSONdata) {
 	var resultContainerSel;
 	var width, height, forceGraph, zoom, link, nodesGroup;
+
+	graphData = JSONdata;
 
 	width = 800;
 	height = 500;
@@ -48,6 +50,7 @@ function displayGraph(JSONdata) {
 		nodesGroup.attr("transform", function(d) { return "translate(" + [d.x, d.y] + ")"; });
 	});
 
+	displayGeneralGraphInfo(JSONdata);
 }
 
 function createEdges(JSONdata, graphFrame) {
@@ -106,6 +109,8 @@ function mouseoverNode(nodeData) {
 	putNodeInForeground(this);
 	targetNodes = highlightEdgesAndGetTargetNodes(true, nodeData);
 	highlighTargetNodes(true, targetNodes);
+
+	displayNodeInfo(nodeData);
 }
 
 function mouseoutNode(nodeData) {
@@ -115,6 +120,8 @@ function mouseoutNode(nodeData) {
 	putNodeInForeground(this);
 	targetNodes = highlightEdgesAndGetTargetNodes(false, nodeData);
 	highlighTargetNodes(false, targetNodes);
+
+	displayGeneralGraphInfo(graphData);
 }
 
 function highlightHoveredNode(highlightBool, nodeData, node) {
@@ -124,7 +131,6 @@ function highlightHoveredNode(highlightBool, nodeData, node) {
 	nodeText = d3.select(node.parentNode).select("text");
 
 	displayedText = highlightBool ? ("Over: " + nodeData.name) : "";
-	$(".results__info").html(displayedText);
 
 	nodeEl.classed("node--hovered", highlightBool);
 	nodeText.classed("node-title--node-hovered", highlightBool);
@@ -176,4 +182,58 @@ function highlighTargetNodes(highlightBool, targetNodes) {
 	 		d3.select(this).classed("node--highlight-edge-target", highlightBool);
 	 		nodeText.classed("node-title--highlight-edge-target", highlightBool);
 	 	});
+}
+
+function displayGeneralGraphInfo(JSONdata) {
+	if (graphData.activateInfos) {
+		$(".js-info-box-table").html("");
+		$(".js-info-box-title").html("General Info");
+
+		addLine("Number of tweets", JSONdata.totalNbOfTweets);
+		addLine("Number of hashtags", JSONdata.totalNbOfNodes);
+		addLine("Number of edges", JSONdata.totalNbOfEdges);
+		addLine("Density of the graph", JSONdata.density);
+
+		$(".js-info-box").show();
+	}
+}
+
+function displayNodeInfo(JSONdata) {
+	if (graphData.activateInfos) {
+		$(".js-info-box-table").html("");
+		$(".js-info-box-title").html(JSONdata.name);
+
+		addLine("Number of tweets", JSONdata.nbOfTweets);
+		addLine("Percentage total tweets", JSONdata.percentageTotalTweetNb + "%");
+		addLine("Degree", JSONdata.degree);
+		addLine("Popularity rank", JSONdata.popularityRank);
+
+		$(".js-info-box").show();
+	}
+}
+
+function displayEdgeInfo(JSONdata) {
+	if (graphData.activateInfos) {
+		$(".js-info-box-table").html("");
+		$(".js-info-box-title").html(JSONdata.name);
+
+		addLine("Number of tweets", JSONdata.nbOfTweets);
+		addLine("Percentage total tweets", JSONdata.percentageTotalTweetNb + "%");
+		addLine("Degree", JSONdata.degree);
+		addLine("Popularity rank", JSONdata.popularityRank);
+
+		$(".js-info-box").show();
+	}
+}
+
+function addLine(key, value) {
+	var row;
+
+	row = '<tr><td class="info-box-table__key">';
+	row += key;
+	row += '</td><td class="info-box-table__value">';
+	row += value;
+	row += '</td>';
+
+	$(".js-info-box-table").append(row);
 }
