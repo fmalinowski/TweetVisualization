@@ -46,8 +46,8 @@ public class TwitterRest {
 				}
 			}
 
-//			System.out.println("------------hashMap------------");
-//			System.out.println(searchParam + ": " + hashMap.get(searchParam));
+			System.out.println("------------hashMap------------");
+			System.out.println(searchParam + ": " + hashMap.get(searchParam));
 			if (searchList.size() > 0) {
 				for (int i = 0; i < 7; i++) {
 //					System.out.println(searchList.get(i) + ": " + hashMap.get(searchList.get(i)));
