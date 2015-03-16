@@ -41,13 +41,13 @@ public class ServerRunner implements IServerRunner {
 
 	class HashTagRequestHandler implements HttpHandler {
 		public void handle(HttpExchange t) throws IOException {
+			byte[] answerForClient;
 			String query = t.getRequestURI().getQuery();
 			// This serves the requests like ?param1=value1&param2=value2 ...
 			Map<String, String> params = ParamUtilities.queryToMap(query);
 			hashtagQueryProcessor = new HashtagQueryProcessor(
 					params.get("hashtag"));
 			JSONObject jsonResponse = null;
-
 			try {
 				// Send the query
 				HashtagQueryProcessor.placeHolder = TwitterRest.handleSearch(query);
@@ -55,16 +55,15 @@ public class ServerRunner implements IServerRunner {
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
-
 			String strJsonResponse = jsonResponse.toString();
-
+			answerForClient = strJsonResponse.getBytes();
+			
 			Headers h = t.getResponseHeaders();
 			h.add("Content-Type", "application/json");
-			t.sendResponseHeaders(200, strJsonResponse.length());
+			t.sendResponseHeaders(200, answerForClient.length);
 
 			OutputStream os = t.getResponseBody();
-
-			os.write(strJsonResponse.getBytes());
+			os.write(answerForClient);
 			os.close();
 		}
 	}
