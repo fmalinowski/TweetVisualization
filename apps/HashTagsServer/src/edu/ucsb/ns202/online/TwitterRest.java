@@ -17,88 +17,87 @@ import twitter4j.TwitterStreamFactory;
 import twitter4j.conf.ConfigurationBuilder;
 
 public class TwitterRest {
-	private static SortedHashtagGraph hashtagGraph;
+	private static SortedHashtagGraph hashtagGraphGen;
 	private static ConfigurationBuilder cb;
 	private static Twitter twitter;
 	private static HashMap<String, ArrayList<String>> hashMap = new HashMap<String, ArrayList<String>>();
 
 	public static SortedHashtagGraph handleSearch(String searchParam) {
 		hashMap.clear();
-		hashtagGraph = new SortedHashtagGraph();
+		hashtagGraphGen = new SortedHashtagGraph();
 
 		twitterAuth();
 		List<String> searchList = twitterSearch(searchParam);
-		if (hashtagGraph.hasNode(searchParam)) {
-			hashtagGraph.incrementNodeWeight(searchParam);
+		if (hashtagGraphGen.hasNode(searchParam)) {
+			hashtagGraphGen.incrementNodeWeight(searchParam);
 		}
 		else {
-			hashtagGraph.addNode(searchParam);
+			hashtagGraphGen.addNode(searchParam);
 		}
 
 		if (searchList.size() > 0) {
 			for (int i = 0; i < 7; i++) {
 				twitterSearch(searchList.get(i));
-				if (hashtagGraph.hasNode(searchList.get(i))) {
-					hashtagGraph.incrementNodeWeight(searchList.get(i));
+				if (hashtagGraphGen.hasNode(searchList.get(i))) {
+					hashtagGraphGen.incrementNodeWeight(searchList.get(i));
 				}
 				else {
-					hashtagGraph.addNode(searchList.get(i));
+					hashtagGraphGen.addNode(searchList.get(i));
 				}
 			}
 
-			System.out.println("------------hashMap------------");
-			System.out.println(searchParam + ": " + hashMap.get(searchParam));
+//			System.out.println("------------hashMap------------");
+//			System.out.println(searchParam + ": " + hashMap.get(searchParam));
 			if (searchList.size() > 0) {
 				for (int i = 0; i < 7; i++) {
-					System.out.println(searchList.get(i) + ": "
-							+ hashMap.get(searchList.get(i)));
+//					System.out.println(searchList.get(i) + ": " + hashMap.get(searchList.get(i)));
 					List<String> values = hashMap.get(searchList.get(i));
 					// For loop goes here to add edges
 					if (values.size() > 0) {
 						for (int j = 0; j < values.size(); j++) {
-							if(hashtagGraph.hasNode(searchList.get(i))) {
-								hashtagGraph.incrementNodeWeight(searchList.get(i));
+							if(hashtagGraphGen.hasNode(searchList.get(i))) {
+								hashtagGraphGen.incrementNodeWeight(searchList.get(i));
 							}
 							else {
-								hashtagGraph.addNode(searchList.get(i));
+								hashtagGraphGen.addNode(searchList.get(i));
 							}
-							if(hashtagGraph.hasNode(values.get(j))) {
-								hashtagGraph.incrementNodeWeight(values.get(j));
+							if(hashtagGraphGen.hasNode(values.get(j))) {
+								hashtagGraphGen.incrementNodeWeight(values.get(j));
 							}
 							else {
-								hashtagGraph.addNode(values.get(j));
+								hashtagGraphGen.addNode(values.get(j));
 							}
-							hashtagGraph.addEdge(searchList.get(i), values.get(j));
+							hashtagGraphGen.addEdge(searchList.get(i), values.get(j));
 						}
 					}
 				}
 				List<String> value = hashMap.get(searchParam);
 				if (value.size() > 0) {
 					for (int j = 0; j < value.size(); j++) {
-						if (hashtagGraph.hasEdge(searchParam, value.get(j))) {
-							hashtagGraph.incrementEdgeWeight(searchParam, value.get(j));
+						if (hashtagGraphGen.hasEdge(searchParam, value.get(j))) {
+							hashtagGraphGen.incrementEdgeWeight(searchParam, value.get(j));
 						}
 						else {
-							if(hashtagGraph.hasNode(searchParam)) {
-								hashtagGraph.incrementNodeWeight(searchParam);
+							if(hashtagGraphGen.hasNode(searchParam)) {
+								hashtagGraphGen.incrementNodeWeight(searchParam);
 							}
 							else {
-								hashtagGraph.addNode(searchParam);
+								hashtagGraphGen.addNode(searchParam);
 							}
-							if(hashtagGraph.hasNode(value.get(j))) {
-								hashtagGraph.incrementNodeWeight(value.get(j));
+							if(hashtagGraphGen.hasNode(value.get(j))) {
+								hashtagGraphGen.incrementNodeWeight(value.get(j));
 							}
 							else {
-								hashtagGraph.addNode(value.get(j));
+								hashtagGraphGen.addNode(value.get(j));
 							}
-							hashtagGraph.addEdge(searchParam, value.get(j));
+							hashtagGraphGen.addEdge(searchParam, value.get(j));
 						}
 					}
 				}
 			}
 		}
 
-		return hashtagGraph;
+		return hashtagGraphGen;
 	}
 
 	private static void twitterAuth() {
@@ -138,9 +137,8 @@ public class TwitterRest {
 				List<Status> tweets = result.getTweets();
 
 				for (Status tweet : tweets) {
-					if (tweet.getHashtagEntities().length > 1) {
-						// testing this 
-						hashtagGraph.incrementTotalTweetNumber();
+					hashtagGraphGen.incrementTotalTweetNumber();
+					if (tweet.getHashtagEntities().length > 1) {			
 						// System.out.println("-----------------");
 						for (int i = 0; i < tweet.getHashtagEntities().length; i++) {
 							if (!tweet.getHashtagEntities()[i].getText()

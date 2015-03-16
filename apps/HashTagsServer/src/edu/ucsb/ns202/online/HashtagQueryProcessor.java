@@ -22,6 +22,7 @@ public class HashtagQueryProcessor {
 		// return jsonObject;
 		
 		placeHolder.sortGraph();
+		System.out.println("returning getnodesandedges as JSON");
 		return placeHolder.getNodesAndEdgesAsJSON();
 	}
 

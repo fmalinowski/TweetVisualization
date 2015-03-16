@@ -192,6 +192,7 @@ public class HashtagGraph {
 		try {
 			result.put("nodes", this.getNodesAsJSON());
 			result.put("links", this.getEdgesAsJSON());
+//			addGeneralInfoForJSON(result);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -207,15 +208,15 @@ public class HashtagGraph {
 		for (HashtagNode hashtagNode : this.hashtagIDarrayList) {			
 			nodeJSON = new JSONObject();
 			try {
-				System.out.println("Node name:" + hashtagNode.getNameWithCase() + " | id:" + hashtagNode.getNodeID() + " | NbTweets:" + hashtagNode.getNumberOfTweetsInvolved() + " | totalTweets:" + this.totalNumberOfTweets  + " | radius:" + computeD3NodeRadius(hashtagNode));
+//				System.out.println("Node name:" + hashtagNode.getNameWithCase() + " | id:" + hashtagNode.getNodeID() + " | NbTweets:" + hashtagNode.getNumberOfTweetsInvolved() + " | totalTweets:" + this.totalNumberOfTweets  + " | radius:" + computeD3NodeRadius(hashtagNode));
 				nodeJSON.put("name", hashtagNode.getNameWithCase());
 				nodeJSON.put("id", hashtagNode.getNodeID());
 				nodeJSON.put("radius", computeD3NodeRadius(hashtagNode));
 				nodeJSON.put("type", hashtagNode.getType());
+//				this.addNodeInfoForJSON(nodeJSON, hashtagNode);
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
-			
 			nodesJSON.put(nodeJSON);
 		}
 		return nodesJSON;
@@ -242,6 +243,7 @@ public class HashtagGraph {
 						edgeJSON.put("source", hashtagNodeSource.getNodeID());
 						edgeJSON.put("target", hashtagNodeTarget.getNodeID());
 						edgeJSON.put("weight", computeD3EdgeWeight(hashtagEdge));
+//						this.addEdgeInfoForJSON(edgeJSON, hashtagEdge);
 					} catch (JSONException e) {
 						e.printStackTrace();
 					}
@@ -307,4 +309,5 @@ public class HashtagGraph {
 		
 		return new BigDecimal(result).setScale(2, RoundingMode.CEILING).doubleValue();
 	}
+
 }
