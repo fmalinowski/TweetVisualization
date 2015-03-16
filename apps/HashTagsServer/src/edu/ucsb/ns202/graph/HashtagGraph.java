@@ -12,17 +12,39 @@ import org.json.JSONObject;
 
 public class HashtagGraph {
 	
-	private HashMap<String, ArrayList<HashtagEdge>> graph = new HashMap<String, ArrayList<HashtagEdge>>();
-	private HashMap<String, HashtagNode> hashtagNodeMetaDataHashMap = new HashMap<String, HashtagNode>();
-	private ArrayList<HashtagNode> hashtagIDarrayList = new ArrayList<HashtagNode>();
+	protected HashMap<String, ArrayList<HashtagEdge>> graph = new HashMap<String, ArrayList<HashtagEdge>>();
+	protected HashMap<String, HashtagNode> hashtagNodeMetaDataHashMap = new HashMap<String, HashtagNode>();
+	protected ArrayList<HashtagNode> hashtagIDarrayList = new ArrayList<HashtagNode>();
+	protected ArrayList<HashtagEdge> hashtagEdgearrayList = new ArrayList<HashtagEdge>();
 	
-	private int totalNumberOfTweets = 0;
-	private int totalNumberOfTweetsWithOneHashtag = 0;
+	protected int totalNumberOfTweets = 0;
 	
-	private int totalNodesNumber = 0;
+	protected int totalNodesNumber = 0;
+	protected int totalNodeWeight = 0;
+	
+	protected int totalEdgesNumber = 0;
+	protected int totalEdgeWeight = 0;
+	
+	public void incrementTotalTweetNumber() {
+		this.totalNumberOfTweets++;
+	}
 
 	public void addNode(String hashtag) {
-		HashtagNode hashtagNode = this.addNodeWithoutIncrementingWeight(hashtag);
+		String hashTagKey = hashtag.toLowerCase();
+		HashtagNode hashtagNode = this.hashtagNodeMetaDataHashMap.get(hashTagKey);
+		
+		if (hashtagNode == null) {
+			hashtagNode = new HashtagNode(totalNodesNumber, hashtag);
+			if(hashTagKey.startsWith("@")) {
+				hashtagNode.setTypeMention();
+			}
+			
+			this.graph.put(hashTagKey, new ArrayList<HashtagEdge>());
+			this.hashtagNodeMetaDataHashMap.put(hashTagKey, hashtagNode);
+			this.hashtagIDarrayList.add(hashtagNode);
+			
+			this.totalNodesNumber++;
+		}
 		this.incrementNodeWeight(hashtag);
 	}	
 	
@@ -30,9 +52,8 @@ public class HashtagGraph {
 		HashtagNode hashtagNode = this.getHashtagNode(hashtag);
 		
 		if (hashtagNode != null) {
-			hashtagNode.incrementTotalTweetNumberWithOneHashtag();
-			this.totalNumberOfTweets++;
-			this.totalNumberOfTweetsWithOneHashtag++;
+			hashtagNode.incrementNumberOfTweetsInvolved();
+			this.totalNodeWeight++;
 		}
 	}
 	
@@ -48,10 +69,12 @@ public class HashtagGraph {
 		}
 		
 		if (!this.hasNode(hashtagSource)) {
-			this.addNodeWithoutIncrementingWeight(hashtagSource); //Add function addNodeWithoutIncrementingWeight();
+			System.err.println("ERROR: Creating an edge between nodes \"" + hashtagSource + "\" and \"" + hashtagTarget + "\" but node \"" + hashtagSource + "\" doesn't exist.)");
+			return;
 		}
 		if (!this.hasNode(hashtagTarget)) {
-			this.addNodeWithoutIncrementingWeight(hashtagTarget); //Add function addNodeWithoutIncrementingWeight();
+			System.err.println("ERROR: Creating an edge between nodes \"" + hashtagSource + "\" and \"" + hashtagTarget + "\" but node \"" + hashtagSource + "\" doesn't exist.)");
+			return;
 		}
 		
 		hashtagNodeSource = this.hashtagNodeMetaDataHashMap.get(hashTagSourceKey);
@@ -60,6 +83,8 @@ public class HashtagGraph {
 		if (!this.hasEdge(hashTagSourceKey, hashTagTargetKey)) {
 			hashtagEdge1 = new HashtagEdge(hashtagNodeSource, hashtagNodeTarget);
 			this.graph.get(hashTagSourceKey).add(hashtagEdge1);
+			this.hashtagEdgearrayList.add(hashtagEdge1);
+			this.totalEdgesNumber++;
 		}
 		else {
 			hashtagEdge1 = this.getHashtagEdge(hashTagSourceKey, hashTagTargetKey);
@@ -72,9 +97,8 @@ public class HashtagGraph {
 			hashtagEdge2 = this.getHashtagEdge(hashTagTargetKey, hashTagSourceKey);
 		}
 		
-		hashtagEdge1.incrementNumberOfTweets();
-		hashtagEdge2.incrementNumberOfTweetsWithoutIncrementingTweetNbAtNodes();
-		this.totalNumberOfTweets++;
+		this.incrementEdgeWeight(hashTagSourceKey, hashTagTargetKey);
+		// We could increment number of edges in the attribute of the 2 nodes.
 	}
 	
 	public void incrementEdgeWeight(String hashtagSource, String hashtagTarget) {
@@ -82,9 +106,10 @@ public class HashtagGraph {
 		HashtagEdge hashtagEdge2 = this.getHashtagEdge(hashtagTarget, hashtagSource);
 		
 		if (hashtagEdge1 != null && hashtagEdge2 != null) {
-			hashtagEdge1.incrementNumberOfTweets();
-			hashtagEdge2.incrementNumberOfTweetsWithoutIncrementingTweetNbAtNodes();
-			this.totalNumberOfTweets++;
+			hashtagEdge1.incrementNumberOfTweetsInvolved();
+			hashtagEdge2.incrementNumberOfTweetsInvolved();
+			this.totalEdgeWeight++;
+			// We could increment number of edges in the attribute of the 2 nodes.
 		}
 	}
 	
@@ -135,18 +160,22 @@ public class HashtagGraph {
 		}
 		return hashtagEdgeList.size();
 	}
-	
-	public int getCountOfNodes() {
-		return this.graph.size();
-	}
 
-	public ArrayList<HashtagNode> getNodes() {
+	public ArrayList<HashtagNode> getAllNodes() {
 		ArrayList<HashtagNode> hashtagNodeList = new ArrayList<HashtagNode>();
 		for (HashtagNode hashtagNode : hashtagIDarrayList) {
 			hashtagNodeList.add(hashtagNode);
 		}
 		
 		return hashtagNodeList;
+	}
+	
+	public ArrayList<HashtagEdge> getAllEdges() {		
+		return (ArrayList<HashtagEdge>) this.hashtagEdgearrayList.clone();
+	}
+	
+	public ArrayList<HashtagEdge> getEdges(String hashtag) {		
+		return (ArrayList<HashtagEdge>) this.graph.get(hashtag.toLowerCase()).clone();
 	}
 	
 	public ArrayList<String> getNodeStringList() {
@@ -178,7 +207,7 @@ public class HashtagGraph {
 		for (HashtagNode hashtagNode : this.hashtagIDarrayList) {			
 			nodeJSON = new JSONObject();
 			try {
-				System.out.println("Node name:" + hashtagNode.getNameWithCase() + " | id:" + hashtagNode.getNodeID() + " | NbTweets:" + hashtagNode.getTotalTweetNumber() + " | totalTweets:" + this.totalNumberOfTweets  + " | radius:" + computeD3NodeRadius(hashtagNode));
+				System.out.println("Node name:" + hashtagNode.getNameWithCase() + " | id:" + hashtagNode.getNodeID() + " | NbTweets:" + hashtagNode.getNumberOfTweetsInvolved() + " | totalTweets:" + this.totalNumberOfTweets  + " | radius:" + computeD3NodeRadius(hashtagNode));
 				nodeJSON.put("name", hashtagNode.getNameWithCase());
 				nodeJSON.put("id", hashtagNode.getNodeID());
 				nodeJSON.put("radius", computeD3NodeRadius(hashtagNode));
@@ -209,7 +238,7 @@ public class HashtagGraph {
 				if (hashtagNodeSource.getNodeID() < hashtagNodeTarget.getNodeID()) {
 					edgeJSON = new JSONObject();
 					try {
-						System.out.println("edge source:" + hashtagNodeSource.getNameWithCase() + " | target:" + hashtagNodeTarget.getNameWithCase() + " | nbTweets:" + hashtagEdge.getNumberOfTweets() + " | totalTweets:" + this.totalNumberOfTweets + " | weight:" + computeD3EdgeWeight(hashtagEdge));
+						System.out.println("edge source:" + hashtagNodeSource.getNameWithCase() + " | target:" + hashtagNodeTarget.getNameWithCase() + " | nbTweets:" + hashtagEdge.getNumberOfTweetsInvolved() + " | totalTweets:" + this.totalNumberOfTweets + " | weight:" + computeD3EdgeWeight(hashtagEdge));
 						edgeJSON.put("source", hashtagNodeSource.getNodeID());
 						edgeJSON.put("target", hashtagNodeTarget.getNodeID());
 						edgeJSON.put("weight", computeD3EdgeWeight(hashtagEdge));
@@ -227,7 +256,23 @@ public class HashtagGraph {
 		return this.totalNumberOfTweets;
 	}
 	
-	public double computeD3EdgeWeight(HashtagEdge hashtagEdge) {
+	public int getTotalNumberOfNodes() {
+		return this.totalNodesNumber;
+	}
+	
+	public int getTotalNumberOfEdges() {
+		return this.totalEdgesNumber;
+	}
+	
+	public int getTotalNodesWeight() {
+		return this.totalNodeWeight;
+	}
+	
+	public int getTotalEdgesWeight() {
+		return this.totalEdgeWeight;
+	}
+	
+	protected double computeD3EdgeWeight(HashtagEdge hashtagEdge) {
 		// minimum width-stroke for D3: 0.3 (preferred: 0.8)
 		// maximum width-stroke for D3: 7
 		double minD3StrokeWidth, maxD3StrokeWidth, minimumPossibleTweetFraction;
@@ -235,9 +280,9 @@ public class HashtagGraph {
 		
 		minD3StrokeWidth = 0.8;
 		maxD3StrokeWidth = 7.0;
-		minimumPossibleTweetFraction = 1.0 / this.totalNumberOfTweets;
+		minimumPossibleTweetFraction = 1.0 / this.totalEdgeWeight;
 		
-		edgeTweetFraction = (double)hashtagEdge.getNumberOfTweets()/this.totalNumberOfTweets;
+		edgeTweetFraction = (double)hashtagEdge.getNumberOfTweetsInvolved()/this.totalEdgeWeight;
 				
 		result = minD3StrokeWidth + (maxD3StrokeWidth - minD3StrokeWidth) * 
 				(edgeTweetFraction-minimumPossibleTweetFraction)/(1-minimumPossibleTweetFraction);
@@ -245,7 +290,7 @@ public class HashtagGraph {
 		return new BigDecimal(result).setScale(2, RoundingMode.CEILING).doubleValue();
 	}
 	
-	public double computeD3NodeRadius(HashtagNode hashtagNode) {
+	protected double computeD3NodeRadius(HashtagNode hashtagNode) {
 		double minD3Radius, maxD3Radius, minimumPossibleTweetFraction, nodeTweetFraction;
 		double result;
 		
@@ -253,33 +298,13 @@ public class HashtagGraph {
 		// maximum radius for D3: 15
 		minD3Radius = 3.0;
 		maxD3Radius = 13.0;
-		minimumPossibleTweetFraction = 1.0 / this.totalNumberOfTweets;
+		minimumPossibleTweetFraction = 1.0 / this.totalNodeWeight;
 		
-		nodeTweetFraction = (double)hashtagNode.getTotalTweetNumber()/this.totalNumberOfTweets; 
+		nodeTweetFraction = (double)hashtagNode.getNumberOfTweetsInvolved()/this.totalNodeWeight; 
 		
 		result = minD3Radius + (maxD3Radius - minD3Radius) * 
 				(nodeTweetFraction-minimumPossibleTweetFraction)/(1-minimumPossibleTweetFraction);
 		
 		return new BigDecimal(result).setScale(2, RoundingMode.CEILING).doubleValue();
-	}
-	
-	private HashtagNode addNodeWithoutIncrementingWeight(String hashtag) {
-		String hashTagKey = hashtag.toLowerCase();
-		HashtagNode hashtagNode = this.hashtagNodeMetaDataHashMap.get(hashTagKey);
-		
-		if (hashtagNode == null) {
-			hashtagNode = new HashtagNode(totalNodesNumber, hashtag);
-			if(hashTagKey.startsWith("@")) {
-				hashtagNode.setTypeMention();
-			}
-			
-			this.graph.put(hashTagKey, new ArrayList<HashtagEdge>());
-			this.hashtagNodeMetaDataHashMap.put(hashTagKey, hashtagNode);
-			this.hashtagIDarrayList.add(hashtagNode);
-			
-			this.totalNodesNumber++;
-		}
-		
-		return hashtagNode;
 	}
 }

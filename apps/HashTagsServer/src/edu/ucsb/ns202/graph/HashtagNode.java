@@ -4,7 +4,7 @@ public class HashtagNode {
 	
 	private int nodeID;
 	private String nameWithCase;
-	private int totalTweetNumberWithOneHashtag = 0;
+//	private int totalTweetNumberWithOneHashtag = 0;
 	private int totalTweetNumber = 0;
 	private enum Type { HASHTAG, MENTION }
 	private Type hashtagOrMention = Type.HASHTAG;
@@ -14,8 +14,25 @@ public class HashtagNode {
 		this.nameWithCase = nameWithCase;
 	}
 	
+	public HashtagNode clone() {
+		HashtagNode clonedHashtagNode = new HashtagNode(this.nodeID, nameWithCase);
+//		clonedHashtagNode.totalTweetNumberWithOneHashtag = this.totalTweetNumberWithOneHashtag;
+		clonedHashtagNode.totalTweetNumber = this.totalTweetNumber;
+		clonedHashtagNode.hashtagOrMention = this.hashtagOrMention;
+		
+		return clonedHashtagNode;
+	}
+	
 	public int getNodeID() {
 		return this.nodeID;
+	}
+	
+	public void setNodeID(int nodeID) {
+		this.nodeID = nodeID;
+	}
+	
+	public void setName(String nameWithCase) {
+		this.nameWithCase = nameWithCase;
 	}
 	
 	public String getNameWithCase() {
@@ -28,6 +45,10 @@ public class HashtagNode {
 	
 	public void setTypeMention() {
 		this.hashtagOrMention = Type.MENTION;
+	}
+	
+	public void setTypeHashtag() {
+		this.hashtagOrMention = Type.HASHTAG;
 	}
 	
 	public int getType() {
@@ -46,20 +67,20 @@ public class HashtagNode {
 		return type;
 	}
 	
-	protected void incrementTotalTweetNumberWithOneHashtag() {
-		this.totalTweetNumberWithOneHashtag++;
+//	protected void incrementTotalTweetNumberWithOneHashtag() {
+//		this.totalTweetNumberWithOneHashtag++;
+//		this.totalTweetNumber++;
+//	}
+	
+//	public int getTotalTweetNumberWithOneHashtag() {
+//		return this.totalTweetNumberWithOneHashtag;
+//	}
+	
+	protected void incrementNumberOfTweetsInvolved() {
 		this.totalTweetNumber++;
 	}
 	
-	public int getTotalTweetNumberWithOneHashtag() {
-		return this.totalTweetNumberWithOneHashtag;
-	}
-	
-	protected void incrementTotalTweetNumber() {
-		this.totalTweetNumber++;
-	}
-	
-	public int getTotalTweetNumber() {
+	public int getNumberOfTweetsInvolved() {
 		return this.totalTweetNumber;
 	}
 }

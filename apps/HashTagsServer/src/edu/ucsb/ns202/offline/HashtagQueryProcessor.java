@@ -10,77 +10,35 @@ import java.util.Arrays;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import edu.ucsb.ns202.graph.FrontEndHashtagGraph;
 import edu.ucsb.ns202.graph.HashtagGraph;
+import edu.ucsb.ns202.graph.SortedHashtagGraph;
 
 public class HashtagQueryProcessor {
 	
 	private String hashtag;
-	private MySQLAccessor mySqlAccessor;
+	private SortedHashtagGraph hashtagGraph;
 	
-	public HashtagQueryProcessor(String hashtag) {
+	public HashtagQueryProcessor(SortedHashtagGraph hashtagGraph, String hashtag) {
+		this.hashtagGraph = hashtagGraph;
 		this.hashtag = hashtag;
-		
-		this.mySqlAccessor = new MySQLAccessor(MySQLCredentials.LOGIN, 
-				MySQLCredentials.PASSWORD, "tweets");
 	}
 
 	public JSONObject query() {
-		String[] hashtagsArray;
-		HashtagGraph hashtagGraph = new HashtagGraph();
+		FrontEndGraphBuilder frontEndGraphBuilder;
+		FrontEndHashtagGraph frontEndHashtagGraph;
+		int[] nodesPerLevel = {20, 5, 2};
+		String desiredHashtag;
 		
-		this.mySqlAccessor.selectDBTable("tweet_superbowl");
-		this.mySqlAccessor.connect();
-		this.mySqlAccessor.queryRelatedHashtags(this.hashtag);
+		// In case we are putting an empty string, we want to look for the most popular
+		// hashtag and its links
+		desiredHashtag = (String) (this.hashtag.replaceAll(" ", "").length() == 0 ? 
+				this.hashtagGraph.getAllNodes().get(0) : this.hashtag);
 		
-		while (this.mySqlAccessor.hasNext()) {
-			hashtagsArray = this.mySqlAccessor.getHashtags();
-			
-			if (hashtagGraph.getCountOfNodes() > 80) {
-				break;
-			}
-			
-			if (hashtagsArray != null) {
-				this.addEdges(hashtagsArray, hashtagGraph);
-			}
-		}
+		frontEndGraphBuilder = new FrontEndGraphBuilder(this.hashtagGraph, this.hashtag, nodesPerLevel);
+		frontEndHashtagGraph = frontEndGraphBuilder.buildGraph();
 		
-		System.out.println("DONE");
-			
-		this.mySqlAccessor.close();
-		
-		return hashtagGraph.getNodesAndEdgesAsJSON();
-	}
-	
-	public void addEdges(String[] hashtagsArrayList, HashtagGraph hashtagGraph) {
-		String hashtagSource, hashtagTarget;
-		
-		if (hashtagsArrayList.length == 1) {
-			if (hashtagGraph.hasNode(hashtagsArrayList[0])) {
-				hashtagGraph.incrementNodeWeight(hashtagsArrayList[0]);
-			}
-			else {
-				hashtagGraph.addNode(hashtagsArrayList[0]);
-			}
-		}
-		else {
-			System.out.println("-----");
-			for (int i = 0; i < hashtagsArrayList.length; i++) {
-				hashtagSource = hashtagsArrayList[i];
-				
-				System.out.println(hashtagSource);
-				
-				for (int j = i+1; j < hashtagsArrayList.length; j++) {
-					hashtagTarget = hashtagsArrayList[j];
-					if (hashtagGraph.hasEdge(hashtagSource, hashtagTarget)) {
-						hashtagGraph.incrementEdgeWeight(hashtagSource, hashtagTarget);
-					}
-					else {
-						hashtagGraph.addEdge(hashtagSource, hashtagTarget);
-					}
-//					System.out.println("EDGE: S:" + hashtagSource + "|T:" + hashtagTarget);
-				}
-			}
-		}
+		return frontEndHashtagGraph.getNodesAndEdgesAsJSON();
 	}
 
 }
