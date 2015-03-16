@@ -296,7 +296,7 @@ public class FrontEndHashtagGraph {
 		
 		hashtagKey = hashtagNode.getNameWithoutCase();
 		percentageTotalTweetNb = (double)hashtagNode.getNumberOfTweetsInvolved()/this.totalOriginalNumberOfTweets * 100.0;
-		popularityRank = this.originalHashtagGraph.getHashtagNode(hashtagKey).getNodeID() + 1;
+		popularityRank = this.originalHashtagGraph.getHashtagNode(hashtagKey).getNodeID();
 		degreeOfNode = this.originalHashtagGraph.graph.get(hashtagKey).size();
 		try {
 			jsonObj.put("nbOfTweets", hashtagNode.getNumberOfTweetsInvolved());
