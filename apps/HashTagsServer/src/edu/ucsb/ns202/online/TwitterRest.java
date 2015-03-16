@@ -36,7 +36,7 @@ public class TwitterRest {
 		}
 
 		if (searchList.size() > 0) {
-			for (int i = 0; i < 5; i++) {
+			for (int i = 0; i < 7; i++) {
 				twitterSearch(searchList.get(i));
 				if (hashtagGraphGen.hasNode(searchList.get(i))) {
 					hashtagGraphGen.incrementNodeWeight(searchList.get(i));
@@ -49,7 +49,7 @@ public class TwitterRest {
 //			System.out.println("------------hashMap------------");
 //			System.out.println(searchParam + ": " + hashMap.get(searchParam));
 			if (searchList.size() > 0) {
-				for (int i = 0; i < 5; i++) {
+				for (int i = 0; i < 7; i++) {
 //					System.out.println(searchList.get(i) + ": " + hashMap.get(searchList.get(i)));
 					List<String> values = hashMap.get(searchList.get(i));
 					// For loop goes here to add edges
@@ -137,9 +137,8 @@ public class TwitterRest {
 				List<Status> tweets = result.getTweets();
 
 				for (Status tweet : tweets) {
-					if (tweet.getHashtagEntities().length > 1) {
-						// testing this 
-						hashtagGraphGen.incrementTotalTweetNumber();
+					hashtagGraphGen.incrementTotalTweetNumber();
+					if (tweet.getHashtagEntities().length > 1) {			
 						// System.out.println("-----------------");
 						for (int i = 0; i < tweet.getHashtagEntities().length; i++) {
 							if (!tweet.getHashtagEntities()[i].getText()
