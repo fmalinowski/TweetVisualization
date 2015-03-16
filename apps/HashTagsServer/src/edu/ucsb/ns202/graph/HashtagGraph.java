@@ -15,6 +15,7 @@ public class HashtagGraph {
 	protected HashMap<String, ArrayList<HashtagEdge>> graph = new HashMap<String, ArrayList<HashtagEdge>>();
 	protected HashMap<String, HashtagNode> hashtagNodeMetaDataHashMap = new HashMap<String, HashtagNode>();
 	protected ArrayList<HashtagNode> hashtagIDarrayList = new ArrayList<HashtagNode>();
+	protected ArrayList<HashtagEdge> hashtagEdgearrayList = new ArrayList<HashtagEdge>();
 	
 	protected int totalNumberOfTweets = 0;
 	
@@ -82,6 +83,7 @@ public class HashtagGraph {
 		if (!this.hasEdge(hashTagSourceKey, hashTagTargetKey)) {
 			hashtagEdge1 = new HashtagEdge(hashtagNodeSource, hashtagNodeTarget);
 			this.graph.get(hashTagSourceKey).add(hashtagEdge1);
+			this.hashtagEdgearrayList.add(hashtagEdge1);
 			this.totalEdgesNumber++;
 		}
 		else {
@@ -159,13 +161,17 @@ public class HashtagGraph {
 		return hashtagEdgeList.size();
 	}
 
-	public ArrayList<HashtagNode> getNodes() {
+	public ArrayList<HashtagNode> getAllNodes() {
 		ArrayList<HashtagNode> hashtagNodeList = new ArrayList<HashtagNode>();
 		for (HashtagNode hashtagNode : hashtagIDarrayList) {
 			hashtagNodeList.add(hashtagNode);
 		}
 		
 		return hashtagNodeList;
+	}
+	
+	public ArrayList<HashtagEdge> getAllEdges() {		
+		return (ArrayList<HashtagEdge>) this.hashtagEdgearrayList.clone();
 	}
 	
 	public ArrayList<HashtagEdge> getEdges(String hashtag) {		
@@ -266,7 +272,7 @@ public class HashtagGraph {
 		return this.totalEdgeWeight;
 	}
 	
-	public double computeD3EdgeWeight(HashtagEdge hashtagEdge) {
+	protected double computeD3EdgeWeight(HashtagEdge hashtagEdge) {
 		// minimum width-stroke for D3: 0.3 (preferred: 0.8)
 		// maximum width-stroke for D3: 7
 		double minD3StrokeWidth, maxD3StrokeWidth, minimumPossibleTweetFraction;
@@ -274,9 +280,9 @@ public class HashtagGraph {
 		
 		minD3StrokeWidth = 0.8;
 		maxD3StrokeWidth = 7.0;
-		minimumPossibleTweetFraction = 1.0 / this.totalNumberOfTweets;
+		minimumPossibleTweetFraction = 1.0 / this.totalEdgeWeight;
 		
-		edgeTweetFraction = (double)hashtagEdge.getNumberOfTweetsInvolved()/this.totalNumberOfTweets;
+		edgeTweetFraction = (double)hashtagEdge.getNumberOfTweetsInvolved()/this.totalEdgeWeight;
 				
 		result = minD3StrokeWidth + (maxD3StrokeWidth - minD3StrokeWidth) * 
 				(edgeTweetFraction-minimumPossibleTweetFraction)/(1-minimumPossibleTweetFraction);
@@ -284,7 +290,7 @@ public class HashtagGraph {
 		return new BigDecimal(result).setScale(2, RoundingMode.CEILING).doubleValue();
 	}
 	
-	public double computeD3NodeRadius(HashtagNode hashtagNode) {
+	protected double computeD3NodeRadius(HashtagNode hashtagNode) {
 		double minD3Radius, maxD3Radius, minimumPossibleTweetFraction, nodeTweetFraction;
 		double result;
 		
@@ -292,9 +298,9 @@ public class HashtagGraph {
 		// maximum radius for D3: 15
 		minD3Radius = 3.0;
 		maxD3Radius = 13.0;
-		minimumPossibleTweetFraction = 1.0 / this.totalNumberOfTweets;
+		minimumPossibleTweetFraction = 1.0 / this.totalNodeWeight;
 		
-		nodeTweetFraction = (double)hashtagNode.getNumberOfTweetsInvolved()/this.totalNumberOfTweets; 
+		nodeTweetFraction = (double)hashtagNode.getNumberOfTweetsInvolved()/this.totalNodeWeight; 
 		
 		result = minD3Radius + (maxD3Radius - minD3Radius) * 
 				(nodeTweetFraction-minimumPossibleTweetFraction)/(1-minimumPossibleTweetFraction);

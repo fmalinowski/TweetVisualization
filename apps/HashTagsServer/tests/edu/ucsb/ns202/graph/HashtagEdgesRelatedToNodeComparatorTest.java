@@ -7,7 +7,7 @@ import java.util.Collections;
 
 import org.junit.Test;
 
-public class HashtagEdgeComparatorTest {
+public class HashtagEdgesRelatedToNodeComparatorTest {
 
 	@Test
 	public void testCompare() {
@@ -44,9 +44,9 @@ public class HashtagEdgeComparatorTest {
 		arrayList.add(hashtagEdge2);
 		arrayList.add(hashtagEdge3);
 		
-		HashtagEdgeComparator hashtagEdgeComparator = new HashtagEdgeComparator("node1");
+		HashtagEdgesRelatedToNodeComparator hashtagEdgesRelatedComparator = new HashtagEdgesRelatedToNodeComparator("node1");
 		
-		Collections.sort(arrayList, hashtagEdgeComparator);
+		Collections.sort(arrayList, hashtagEdgesRelatedComparator);
 		
 		assertEquals(hashtagEdge2, arrayList.get(0));
 		assertEquals(hashtagEdge3, arrayList.get(1));

@@ -34,7 +34,7 @@ public class HashtagGraphBuilder {
 			
 		this.mySQLAccessor.close();
 		
-		this.sortedHashtagGraph.sortEdgesByNodePopularity();
+		this.sortedHashtagGraph.sortGraph();
 		return this.sortedHashtagGraph;
 	}
 	

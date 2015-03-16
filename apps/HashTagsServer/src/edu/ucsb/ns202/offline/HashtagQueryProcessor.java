@@ -33,7 +33,7 @@ public class HashtagQueryProcessor {
 		// In case we are putting an empty string, we want to look for the most popular
 		// hashtag and its links
 		desiredHashtag = (String) (this.hashtag.replaceAll(" ", "").length() == 0 ? 
-				this.hashtagGraph.getNodes().get(0) : this.hashtag);
+				this.hashtagGraph.getAllNodes().get(0) : this.hashtag);
 		
 		frontEndGraphBuilder = new FrontEndGraphBuilder(this.hashtagGraph, this.hashtag, nodesPerLevel);
 		frontEndHashtagGraph = frontEndGraphBuilder.buildGraph();

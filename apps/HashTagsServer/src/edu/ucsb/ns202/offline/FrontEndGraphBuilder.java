@@ -32,7 +32,7 @@ public class FrontEndGraphBuilder {
 		String originalEdgeTargetString;
 		int currentLevel, nextNodeLevel;
 		
-		frontEndHashtagGraph = new FrontEndHashtagGraph();
+		frontEndHashtagGraph = new FrontEndHashtagGraph(this.hashtagGraph, this.hashtag);
 		currentLevel = 0;
 		nextNodeLevel = 1;
 		
@@ -77,6 +77,13 @@ public class FrontEndGraphBuilder {
 				nextNodeLevel = levelsBeingProcessed.get(0);
 			}
 		}
+		
+		frontEndHashtagGraph.setOriginalTotalNodesNumber(hashtagGraph.getTotalNumberOfNodes());
+		frontEndHashtagGraph.setOriginalTotalNodeWeight(hashtagGraph.getTotalNodesWeight());
+		frontEndHashtagGraph.setOriginalTotalEdgesNumber(this.hashtagGraph.getTotalNumberOfEdges());
+		frontEndHashtagGraph.setOriginalTotalEdgeWeight(hashtagGraph.getTotalEdgesWeight());
+		frontEndHashtagGraph.setOriginalTotalNumberOfTweets(hashtagGraph.getTotalNumberOfTweets());
+		frontEndHashtagGraph.sortGraph();
 		
 		return frontEndHashtagGraph;
 	}

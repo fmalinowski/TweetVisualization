@@ -394,7 +394,7 @@ public class HashtagGraphTest {
 		hashtagGraph.addNode("NODe3");
 		assertArrayEquals(new String[]{"noDe1", "NodE2", "NODe3"}, hashtagGraph.getNodeStringList().toArray());
 		
-		hashtagGraph.getNodes().remove("NodE2");
+		hashtagGraph.getAllNodes().remove("NodE2");
 		assertArrayEquals(new String[]{"noDe1", "NodE2", "NODe3"}, hashtagGraph.getNodeStringList().toArray());
 	}
 	
@@ -503,7 +503,7 @@ public class HashtagGraphTest {
 	}
 	
 	@Test
-	public void testGetNodes() {
+	public void testGetAllNodes() {
 		HashtagGraph hashtagGraph = new HashtagGraph();
 		HashtagNode node1, node2, node3;
 		ArrayList<HashtagNode> hashtagNodeList;
@@ -516,7 +516,7 @@ public class HashtagGraphTest {
 		node2 = hashtagGraph.getHashtagNode("node2");
 		node3 = hashtagGraph.getHashtagNode("node3");
 		
-		hashtagNodeList = hashtagGraph.getNodes();
+		hashtagNodeList = hashtagGraph.getAllNodes();
 		assertEquals(3, hashtagNodeList.size());
 		assertEquals(node1, hashtagNodeList.get(0));
 		assertEquals(node2, hashtagNodeList.get(1));
@@ -538,8 +538,8 @@ public class HashtagGraphTest {
 		node1 = hashtagGraph.getHashtagNode("node1");
 		node3 = hashtagGraph.getHashtagNode("node3");
 		
-		assertEquals(6.61, hashtagGraph.computeD3NodeRadius(node1), 0.00001);
-		assertEquals(3.8, hashtagGraph.computeD3NodeRadius(node3), 0.00001);
+		assertEquals(7.01, hashtagGraph.computeD3NodeRadius(node1), 0.00001);
+		assertEquals(5.0, hashtagGraph.computeD3NodeRadius(node3), 0.00001);
 	}
 	
 	@Test
