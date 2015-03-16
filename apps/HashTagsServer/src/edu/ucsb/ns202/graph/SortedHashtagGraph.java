@@ -85,14 +85,134 @@ public class SortedHashtagGraph extends HashtagGraph {
 		return new BigDecimal(result).setScale(2, RoundingMode.CEILING).doubleValue();
 	}
 	
-	public JSONArray getNodesAsJSON() {
-		this.sortNodeListByDecreasingPopularity();
-		return super.getNodesAsJSON();
+//	public JSONArray getNodesAsJSON() {
+//		this.sortNodeListByDecreasingPopularity();
+//		return super.getNodesAsJSON();
+//	}
+//	
+//	public JSONArray getEdgesAsJSON() {
+//		this.sortEdgeListByDecreasingPopularity();
+//		return super.getEdgesAsJSON();
+//	}
+	
+	@Override
+	public JSONObject getNodesAndEdgesAsJSON() {
+		JSONObject result = new JSONObject();
+		try {
+			result.put("nodes", this.getNodesAsJSON());
+			result.put("links", this.getEdgesAsJSON());
+//			addGeneralInfoForJSON(result);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return result;
 	}
 	
-	public JSONArray getEdgesAsJSON() {
-		this.sortEdgeListByDecreasingPopularity();
-		return super.getEdgesAsJSON();
+	@Override
+	public JSONArray getNodesAsJSON() {
+		JSONArray nodesJSON = new JSONArray();
+		JSONObject nodeJSON;
+		HashtagNode nodeMetaData;
+		String hashtagWithCase;
+		
+		for (HashtagNode hashtagNode : this.hashtagIDarrayList) {			
+			nodeJSON = new JSONObject();
+			try {
+//				System.out.println("Node name:" + hashtagNode.getNameWithCase() + " | id:" + hashtagNode.getNodeID() + " | NbTweets:" + hashtagNode.getNumberOfTweetsInvolved() + " | totalTweets:" + this.totalNumberOfTweets  + " | radius:" + computeD3NodeRadius(hashtagNode));
+				nodeJSON.put("name", hashtagNode.getNameWithCase());
+				nodeJSON.put("id", hashtagNode.getNodeID());
+				nodeJSON.put("radius", computeD3NodeRadius(hashtagNode));
+				nodeJSON.put("type", hashtagNode.getType());
+				this.addNodeInfoForJSON(nodeJSON, hashtagNode);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			nodesJSON.put(nodeJSON);
+		}
+		return nodesJSON;
 	}
+	
+	@Override
+	public JSONArray getEdgesAsJSON() {
+		JSONArray edgesJSON = new JSONArray();
+		JSONObject edgeJSON;
+		HashtagNode hashtagNodeSource;
+		HashtagNode hashtagNodeTarget;
+		ArrayList<HashtagEdge> hashtagEdgeList;
+		
+		for (String hashtagSource : this.graph.keySet()) {
+			hashtagEdgeList = this.graph.get(hashtagSource);
+			hashtagNodeSource = this.hashtagNodeMetaDataHashMap.get(hashtagSource);
+			
+			for (HashtagEdge hashtagEdge : hashtagEdgeList) {
+				hashtagNodeTarget = hashtagEdge.getTarget();
+				
+				if (hashtagNodeSource.getNodeID() < hashtagNodeTarget.getNodeID()) {
+					edgeJSON = new JSONObject();
+					try {
+						System.out.println("edge source:" + hashtagNodeSource.getNameWithCase() + " | target:" + hashtagNodeTarget.getNameWithCase() + " | nbTweets:" + hashtagEdge.getNumberOfTweetsInvolved() + " | totalTweets:" + this.totalNumberOfTweets + " | weight:" + computeD3EdgeWeight(hashtagEdge));
+						edgeJSON.put("source", hashtagNodeSource.getNodeID());
+						edgeJSON.put("target", hashtagNodeTarget.getNodeID());
+						edgeJSON.put("weight", computeD3EdgeWeight(hashtagEdge));
+//						this.addEdgeInfoForJSON(edgeJSON, hashtagEdge);
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+					edgesJSON.put(edgeJSON);
+				}
+			}
+		}
+		return edgesJSON;
+	}
+	
+	private void addNodeInfoForJSON(JSONObject jsonObj, HashtagNode hashtagNode) {
+		String hashtagKey;
+		int degreeOfNode, popularityRank;
+		double percentageTotalTweetNb;
+		
+		hashtagKey = hashtagNode.getNameWithoutCase();
+		percentageTotalTweetNb = (double)hashtagNode.getNumberOfTweetsInvolved()/this.totalNumberOfTweets * 100.0;
+		popularityRank = this.originalHashtagGraph.getHashtagNode(hashtagKey).getNodeID() + 1;
+		degreeOfNode = this.originalHashtagGraph.graph.get(hashtagKey).size();
+		try {
+			jsonObj.put("nbOfTweets", hashtagNode.getNumberOfTweetsInvolved());
+			jsonObj.put("percentageTotalTweetNb", new BigDecimal(percentageTotalTweetNb).setScale(3, RoundingMode.CEILING).doubleValue());
+			jsonObj.put("degree", degreeOfNode);
+			jsonObj.put("popularityRank", popularityRank);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void addEdgeInfoForJSON(JSONObject jsonObj, HashtagEdge hashtagEdge) {
+		double percentageTotalTweetNb;
+		int popularityRank;
+		
+		percentageTotalTweetNb = (double)hashtagEdge.getNumberOfTweetsInvolved()/this.totalNumberOfTweets * 100.0;
+		try {
+			jsonObj.put("nbOfTweets", hashtagEdge.getNumberOfTweetsInvolved());
+			jsonObj.put("percentageTotalTweetNb", new BigDecimal(percentageTotalTweetNb).setScale(3, RoundingMode.CEILING).doubleValue());
+//			jsonObj.put("popularityRank", hashtagEdge.getNumberOfTweetsInvolved());
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void addGeneralInfoForJSON(JSONObject jsonObj) {
+		double graphDensity;
+		
+		graphDensity = 2.0 * this.totalEdgesNumber / (this.totalNodesNumber * (this.totalNodesNumber-1));
+		
+		try {
+			jsonObj.put("activateInfos", true);
+			jsonObj.put("totalNbOfTweets", this.totalNumberOfTweets);
+			jsonObj.put("totalNbOfNodes", this.totalNodesNumber);
+			jsonObj.put("totalNbOfEdges", this.totalEdgesNumber);
+			jsonObj.put("density", new BigDecimal(graphDensity).setScale(3, RoundingMode.CEILING).doubleValue());
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+	
 
 }

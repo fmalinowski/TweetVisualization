@@ -17,8 +17,6 @@ public class HashtagGraph {
 	protected ArrayList<HashtagNode> hashtagIDarrayList = new ArrayList<HashtagNode>();
 	protected ArrayList<HashtagEdge> hashtagEdgearrayList = new ArrayList<HashtagEdge>();
 	
-	private SortedHashtagGraph originalHashtagGraph;
-	
 	protected int totalNumberOfTweets = 0;
 	
 	protected int totalNodesNumber = 0;
@@ -26,12 +24,6 @@ public class HashtagGraph {
 	
 	protected int totalEdgesNumber = 0;
 	protected int totalEdgeWeight = 0;
-	
-	protected int totalOriginalNumberOfTweets = 0;
-	protected int totalOriginalNodesNumber = 0;
-	protected int totalOriginalNodeWeight = 0;
-	protected int totalOriginalEdgesNumber = 0;
-	protected int totalOriginalEdgeWeight = 0;
 	
 	public void incrementTotalTweetNumber() {
 		this.totalNumberOfTweets++;
@@ -200,7 +192,7 @@ public class HashtagGraph {
 		try {
 			result.put("nodes", this.getNodesAsJSON());
 			result.put("links", this.getEdgesAsJSON());
-			addGeneralInfoForJSON(result);
+//			addGeneralInfoForJSON(result);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -221,7 +213,7 @@ public class HashtagGraph {
 				nodeJSON.put("id", hashtagNode.getNodeID());
 				nodeJSON.put("radius", computeD3NodeRadius(hashtagNode));
 				nodeJSON.put("type", hashtagNode.getType());
-				this.addNodeInfoForJSON(nodeJSON, hashtagNode);
+//				this.addNodeInfoForJSON(nodeJSON, hashtagNode);
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -251,7 +243,7 @@ public class HashtagGraph {
 						edgeJSON.put("source", hashtagNodeSource.getNodeID());
 						edgeJSON.put("target", hashtagNodeTarget.getNodeID());
 						edgeJSON.put("weight", computeD3EdgeWeight(hashtagEdge));
-						this.addEdgeInfoForJSON(edgeJSON, hashtagEdge);
+//						this.addEdgeInfoForJSON(edgeJSON, hashtagEdge);
 					} catch (JSONException e) {
 						e.printStackTrace();
 					}
@@ -317,54 +309,5 @@ public class HashtagGraph {
 		
 		return new BigDecimal(result).setScale(2, RoundingMode.CEILING).doubleValue();
 	}
-	
-	private void addNodeInfoForJSON(JSONObject jsonObj, HashtagNode hashtagNode) {
-		String hashtagKey;
-		int degreeOfNode, popularityRank;
-		double percentageTotalTweetNb;
-		
-		hashtagKey = hashtagNode.getNameWithoutCase();
-		percentageTotalTweetNb = (double)hashtagNode.getNumberOfTweetsInvolved()/this.totalOriginalNumberOfTweets * 100.0;
-		popularityRank = this.originalHashtagGraph.getHashtagNode(hashtagKey).getNodeID() + 1;
-		degreeOfNode = this.originalHashtagGraph.graph.get(hashtagKey).size();
-		try {
-			jsonObj.put("nbOfTweets", hashtagNode.getNumberOfTweetsInvolved());
-			jsonObj.put("percentageTotalTweetNb", new BigDecimal(percentageTotalTweetNb).setScale(3, RoundingMode.CEILING).doubleValue());
-			jsonObj.put("degree", degreeOfNode);
-			jsonObj.put("popularityRank", popularityRank);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	private void addEdgeInfoForJSON(JSONObject jsonObj, HashtagEdge hashtagEdge) {
-		double percentageTotalTweetNb;
-		int popularityRank;
-		
-		percentageTotalTweetNb = (double)hashtagEdge.getNumberOfTweetsInvolved()/this.totalOriginalNumberOfTweets * 100.0;
-		try {
-			jsonObj.put("nbOfTweets", hashtagEdge.getNumberOfTweetsInvolved());
-			jsonObj.put("percentageTotalTweetNb", new BigDecimal(percentageTotalTweetNb).setScale(3, RoundingMode.CEILING).doubleValue());
-//			jsonObj.put("popularityRank", hashtagEdge.getNumberOfTweetsInvolved());
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	private void addGeneralInfoForJSON(JSONObject jsonObj) {
-		double graphDensity;
-		
-		graphDensity = 2.0 * this.totalOriginalEdgesNumber / (this.totalNodesNumber * (this.totalNodesNumber-1));
-		
-		try {
-			jsonObj.put("activateInfos", true);
-			jsonObj.put("totalNbOfTweets", this.totalOriginalNumberOfTweets);
-			jsonObj.put("totalNbOfNodes", this.totalOriginalNodesNumber);
-			jsonObj.put("totalNbOfEdges", this.totalOriginalEdgesNumber);
-			jsonObj.put("density", new BigDecimal(graphDensity).setScale(3, RoundingMode.CEILING).doubleValue());
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-	}
-	
+
 }

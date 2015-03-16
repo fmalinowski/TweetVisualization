@@ -178,6 +178,7 @@ public class FrontEndHashtagGraph {
 	}
 	
 	public JSONObject getNodesAndEdgesAsJSON() {
+		System.out.println("getNodesAndEdgesAsJSON");
 		JSONObject result = new JSONObject();
 		try {
 			result.put("nodes", this.getNodesAsJSON());
