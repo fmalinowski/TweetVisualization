@@ -178,7 +178,6 @@ public class FrontEndHashtagGraph {
 	}
 	
 	public JSONObject getNodesAndEdgesAsJSON() {
-		System.out.println("getNodesAndEdgesAsJSON");
 		JSONObject result = new JSONObject();
 		try {
 			result.put("nodes", this.getNodesAsJSON());
@@ -297,7 +296,7 @@ public class FrontEndHashtagGraph {
 		
 		hashtagKey = hashtagNode.getNameWithoutCase();
 		percentageTotalTweetNb = (double)hashtagNode.getNumberOfTweetsInvolved()/this.totalOriginalNumberOfTweets * 100.0;
-		popularityRank = this.originalHashtagGraph.getHashtagNode(hashtagKey).getNodeID() + 1;
+		popularityRank = this.originalHashtagGraph.getHashtagNode(hashtagKey).getNodeID();
 		degreeOfNode = this.originalHashtagGraph.graph.get(hashtagKey).size();
 		try {
 			jsonObj.put("nbOfTweets", hashtagNode.getNumberOfTweetsInvolved());
@@ -312,12 +311,18 @@ public class FrontEndHashtagGraph {
 	private void addEdgeInfoForJSON(JSONObject jsonObj, HashtagEdge hashtagEdge) {
 		double percentageTotalTweetNb;
 		int popularityRank;
+		String sourceNodeKey, targetNodeKey;
+		
+		sourceNodeKey = hashtagEdge.getSource().getNameWithoutCase();
+		targetNodeKey = hashtagEdge.getTarget().getNameWithoutCase();
 		
 		percentageTotalTweetNb = (double)hashtagEdge.getNumberOfTweetsInvolved()/this.totalOriginalNumberOfTweets * 100.0;
+		popularityRank = this.originalHashtagGraph.
+				getHashtagEdge(sourceNodeKey, targetNodeKey).getEdgeRank() + 1;
 		try {
 			jsonObj.put("nbOfTweets", hashtagEdge.getNumberOfTweetsInvolved());
 			jsonObj.put("percentageTotalTweetNb", new BigDecimal(percentageTotalTweetNb).setScale(3, RoundingMode.CEILING).doubleValue());
-//			jsonObj.put("popularityRank", hashtagEdge.getNumberOfTweetsInvolved());
+			jsonObj.put("popularityRank", popularityRank);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -326,10 +331,11 @@ public class FrontEndHashtagGraph {
 	private void addGeneralInfoForJSON(JSONObject jsonObj) {
 		double graphDensity;
 		
-		graphDensity = 2.0 * this.totalOriginalEdgesNumber / (this.totalNodesNumber * (this.totalNodesNumber-1));
+		graphDensity = 2.0 * this.totalOriginalEdgesNumber / (this.totalOriginalNodesNumber * (this.totalOriginalNodesNumber-1));
 		
 		try {
 			jsonObj.put("activateInfos", true);
+			jsonObj.put("isOfflineMode", true);
 			jsonObj.put("totalNbOfTweets", this.totalOriginalNumberOfTweets);
 			jsonObj.put("totalNbOfNodes", this.totalOriginalNodesNumber);
 			jsonObj.put("totalNbOfEdges", this.totalOriginalEdgesNumber);

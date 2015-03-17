@@ -18,6 +18,11 @@
 	stroke-width: 1.5px;
 }
 
+.node--requested {
+	fill: #0D4BA1;
+	stroke: #A2FF31;
+}
+
 .node--hovered {
 	stroke: #99ff40;
 	fill: #ff4099;
@@ -41,7 +46,7 @@
 
 .node-title {
 	fill: #222222;
-	font-size: 10px sans-serif;
+	font-size: 18px sans-serif;
 	pointer-events: none;
 	text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
 }

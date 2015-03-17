@@ -1,20 +1,26 @@
-var svg, graphFrame, graphData;
+var svg, graphFrame, graphData, isOfflineMode;
 
 function displayGraph(JSONdata) {
 	var resultContainerSel;
-	var width, height, forceGraph, zoom, link, nodesGroup;
+	var width, height, d3charge, forceGraph, zoom, drag, link, nodesGroup;
 
 	graphData = JSONdata;
 
 	width = 800;
 	height = 500;
 
+	isOfflineMode = JSONdata.isOfflineMode;
+
 	resultContainerSel = ".results__container";
+
+	d3charge = isOfflineMode === true ? -3000 : -300;
 
 	forceGraph = d3.layout.force()
 					.linkDistance(80)
-					.charge(-300)
+					.charge(d3charge)
 					.size([width, height]);
+
+	drag = forceGraph.drag().on("dragstart", dragstartCallback);
 
 	$(".results__container svg").remove();
 
@@ -39,7 +45,7 @@ function displayGraph(JSONdata) {
 
 	link = createEdges(JSONdata, graphFrame);
 
-	nodesGroup = createNodes(JSONdata, graphFrame, forceGraph);
+	nodesGroup = createNodes(JSONdata, graphFrame, forceGraph, drag);
 
 	forceGraph.on("tick", function() {
 		link.attr("x1", function(d) { return d.source.x; })
@@ -59,12 +65,14 @@ function createEdges(JSONdata, graphFrame) {
 		.data(JSONdata.links, function(d) { return d.source.id + "-" + d.target.id; })
 		.enter().append("line")
 		.classed("link", true)
+		.on("mouseover", mouseoverEdge)
+		.on("mouseout", mouseoutEdge)
 		.style("stroke-width", function(d) { return d.weight; });
 		// We could have used .style("stroke-width", function(d) { return Math.sqrt(d.value);}); //value of 5 max!
 		// to have a stroker link according to the value data attribute
 }
 
-function createNodes(JSONdata, graphFrame, forceGraph) {
+function createNodes(JSONdata, graphFrame, forceGraph, drag) {
 	var nodesGroup;
 
 	nodesGroup = graphFrame.selectAll("g")
@@ -74,11 +82,12 @@ function createNodes(JSONdata, graphFrame, forceGraph) {
 
 	// Append the circles
 	nodesGroup.append("circle")
-		.attr("class", function(d) { if(d.type == 1) {return 'node--mention';} else {return 'node';}})
+		.attr("class", cssClassForNode)
 		.attr("r", function(d) { return d.radius; }) // We could make a function to get the radius bigger: attr(r, function(d) { return d.value; })
 		.on("mouseover", mouseoverNode)
 		.on("mouseout", mouseoutNode)
-		.call(forceGraph.drag);
+		.on("dblclick", doubleClickOnNode)
+		.call(drag);
 		//.attr("r", 5) // We could make a function to get the radius bigger: attr(r, function(d) { return d.value; })
 		// We could have used .style("fill", function(d) { return color(d.group); }) 
 		// to color in different colros using the data attribute group.
@@ -86,6 +95,7 @@ function createNodes(JSONdata, graphFrame, forceGraph) {
 	// Append the labels
 	nodesGroup.append("text")
 		.text(function(d) { return d.name; })
+		.attr("class", cssClassForNodeTitle)
 		.classed("node-title", true)
 		.attr("x", 8)
     	.attr("y", ".31em");
@@ -100,6 +110,14 @@ function rescale() {
 	scale = d3.event.scale;
 
 	graphFrame.attr("transform", "translate(" + translation + ") scale(" + scale + ")");
+}
+
+function doubleClickOnNode(d) {
+  d3.select(this).classed("fixed", d.fixed = false);
+}
+
+function dragstartCallback(d) {
+	d3.select(this).classed("fixed", d.fixed = true);
 }
 
 function mouseoverNode(nodeData) {
@@ -123,6 +141,58 @@ function mouseoutNode(nodeData) {
 
 	displayGeneralGraphInfo(graphData);
 }
+
+function mouseoverEdge(edgeData) {
+	var edgeEl;
+
+	edgeEl = d3.select(this);
+	edgeEl.classed("link--node-hovered", true);
+	edgeEl.style("stroke-width", "5");
+	displayEdgeInfo(edgeData);
+}
+
+function mouseoutEdge(edgeData) {
+	var edgeEl;
+	
+	edgeEl = d3.select(this);
+	edgeEl.classed("link--node-hovered", false);
+	edgeEl.style("stroke-width", function(d) { return d.weight; });
+	displayGeneralGraphInfo(graphData);
+}
+
+function cssClassForNode(nodeData) {
+	var desiredHashtag, desiredHashtagWithPoundSign;
+
+	desiredHashtag = $(".js-hashtag").val().toLowerCase();
+	desiredHashtagWithPoundSign = '#' + desiredHashtag;
+
+	if(nodeData.type === 1) {
+		return 'node--mention';
+	} 
+	else {
+		if (nodeData.name.toLowerCase() === desiredHashtag || nodeData.name.toLowerCase() === desiredHashtagWithPoundSign) {
+			return 'node node--requested';
+		}
+		else {
+			return 'node';
+		}
+	}
+}
+
+function cssClassForNodeTitle(nodeData) {
+	var desiredHashtag, desiredHashtagWithPoundSign;
+
+	desiredHashtag = $(".js-hashtag").val().toLowerCase();
+	desiredHashtagWithPoundSign = '#' + desiredHashtag;
+
+	if (nodeData.name.toLowerCase() === desiredHashtag || nodeData.name.toLowerCase() === desiredHashtagWithPoundSign) {
+		return 'node-title node-title--requested';
+	}
+	else {
+		return 'node-title';
+	}
+}
+
 
 function highlightHoveredNode(highlightBool, nodeData, node) {
 	var displayedText, nodeEl, nodeText;
@@ -215,11 +285,10 @@ function displayNodeInfo(JSONdata) {
 function displayEdgeInfo(JSONdata) {
 	if (graphData.activateInfos) {
 		$(".js-info-box-table").html("");
-		$(".js-info-box-title").html(JSONdata.name);
+		$(".js-info-box-title").html(graphData.nodes[JSONdata.source.index].name + " - " + graphData.nodes[JSONdata.target.index].name);
 
 		addLine("Number of tweets", JSONdata.nbOfTweets);
 		addLine("Percentage total tweets", JSONdata.percentageTotalTweetNb + "%");
-		addLine("Degree", JSONdata.degree);
 		addLine("Popularity rank", JSONdata.popularityRank);
 
 		$(".js-info-box").show();
