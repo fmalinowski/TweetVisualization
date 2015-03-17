@@ -34,7 +34,15 @@ public class SortedHashtagGraph extends HashtagGraph {
 	}
 	
 	public void sortEdgeListByDecreasingPopularity() {
+		HashtagEdge hashtagEdge;
 		Collections.sort(this.hashtagEdgearrayList, new HashtagEdgeComparator());
+		
+		for (int i = 0; i < this.hashtagEdgearrayList.size(); i++) {
+			hashtagEdge = this.hashtagEdgearrayList.get(i); 
+			hashtagEdge.setEdgeRank(i);
+			this.getHashtagEdge(hashtagEdge.getTarget().getNameWithoutCase(), 
+					hashtagEdge.getSource().getNameWithoutCase()).setEdgeRank(i);
+		}
 	}
 	
 	public void sortGraph() {
@@ -154,7 +162,7 @@ public class SortedHashtagGraph extends HashtagGraph {
 						edgeJSON.put("source", hashtagNodeSource.getNodeID());
 						edgeJSON.put("target", hashtagNodeTarget.getNodeID());
 						edgeJSON.put("weight", computeD3EdgeWeight(hashtagEdge));
-//						this.addEdgeInfoForJSON(edgeJSON, hashtagEdge);
+						this.addEdgeInfoForJSON(edgeJSON, hashtagEdge);
 					} catch (JSONException e) {
 						e.printStackTrace();
 					}
@@ -187,12 +195,17 @@ public class SortedHashtagGraph extends HashtagGraph {
 	private void addEdgeInfoForJSON(JSONObject jsonObj, HashtagEdge hashtagEdge) {
 		double percentageTotalTweetNb;
 		int popularityRank;
+		String sourceNodeKey, targetNodeKey;
+		
+		sourceNodeKey = hashtagEdge.getSource().getNameWithoutCase();
+		targetNodeKey = hashtagEdge.getTarget().getNameWithoutCase();
 		
 		percentageTotalTweetNb = (double)hashtagEdge.getNumberOfTweetsInvolved()/this.totalNumberOfTweets * 100.0;
+		popularityRank = this.getHashtagEdge(sourceNodeKey, targetNodeKey).getEdgeRank() + 1;
 		try {
 			jsonObj.put("nbOfTweets", hashtagEdge.getNumberOfTweetsInvolved());
 			jsonObj.put("percentageTotalTweetNb", new BigDecimal(percentageTotalTweetNb).setScale(3, RoundingMode.CEILING).doubleValue());
-//			jsonObj.put("popularityRank", hashtagEdge.getNumberOfTweetsInvolved());
+			jsonObj.put("popularityRank", popularityRank);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

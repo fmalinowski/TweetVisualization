@@ -84,6 +84,7 @@ public class HashtagGraph {
 			hashtagEdge1 = new HashtagEdge(hashtagNodeSource, hashtagNodeTarget);
 			this.graph.get(hashTagSourceKey).add(hashtagEdge1);
 			this.hashtagEdgearrayList.add(hashtagEdge1);
+			hashtagEdge1.setEdgeRank(totalEdgesNumber);
 			this.totalEdgesNumber++;
 		}
 		else {
@@ -92,6 +93,7 @@ public class HashtagGraph {
 		if (!this.hasEdge(hashTagTargetKey, hashTagSourceKey)) {
 			hashtagEdge2 = new HashtagEdge(hashtagNodeTarget, hashtagNodeSource);
 			this.graph.get(hashTagTargetKey).add(hashtagEdge2);
+			hashtagEdge2.setEdgeRank(hashtagEdge1.getEdgeRank());
 		}
 		else {
 			hashtagEdge2 = this.getHashtagEdge(hashTagTargetKey, hashTagSourceKey);

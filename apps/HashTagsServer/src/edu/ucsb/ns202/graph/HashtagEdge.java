@@ -4,6 +4,7 @@ public class HashtagEdge {
 	
 	private HashtagNode source;
 	private HashtagNode target;
+	private int edgeRank;
 	
 	private int totalTweets = 0;
 	
@@ -42,5 +43,13 @@ public class HashtagEdge {
 	
 	protected void incrementNumberOfTweetsInvolved() {
 		this.totalTweets++;
+	}
+	
+	public void setEdgeRank(int edgeRank) {
+		this.edgeRank = edgeRank;
+	}
+	
+	public int getEdgeRank() {
+		return this.edgeRank;
 	}
 }
