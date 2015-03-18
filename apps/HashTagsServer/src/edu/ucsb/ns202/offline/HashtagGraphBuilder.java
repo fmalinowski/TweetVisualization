@@ -28,7 +28,7 @@ public class HashtagGraphBuilder {
 			
 			if (hashtagsArray != null) {
 				sortedHashtagGraph.incrementTotalTweetNumber();
-				this.addEdges(hashtagsArray, sortedHashtagGraph);
+				this.populateGraph(hashtagsArray, sortedHashtagGraph);
 			}
 		}
 			
@@ -38,7 +38,7 @@ public class HashtagGraphBuilder {
 		return this.sortedHashtagGraph;
 	}
 	
-	public void addEdges(String[] hashtagsArrayList, HashtagGraph hashtagGraph) {
+	public void populateGraph(String[] hashtagsArrayList, HashtagGraph hashtagGraph) {
 		String hashtag, hashtagSource, hashtagTarget;
 		
 		for (int i = 0; i < hashtagsArrayList.length; i++) {
